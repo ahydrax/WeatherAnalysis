@@ -5,9 +5,9 @@ using LinqToDB;
 using LinqToDB.Data;
 using WeatherAnalysis.Core.Model;
 
-namespace WeatherAnalysis.Core.Data
+namespace WeatherAnalysis.Core.Data.Sql
 {
-    public sealed class LocationManager
+    public sealed class LocationManager : ILocationManager
     {
         private readonly string _configurationString;
 

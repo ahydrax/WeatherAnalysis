@@ -49,8 +49,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Data\DbManager.cs" />
-    <Compile Include="Data\LocationManager.cs" />
-    <Compile Include="Data\WeatherRecordManager.cs" />
+    <Compile Include="Data\ILocationManager.cs" />
+    <Compile Include="Data\Sql\FireHazardReportManager.cs" />
+    <Compile Include="Data\IFireHazardReportManager.cs" />
+    <Compile Include="Data\IWeatherRecordManager.cs" />
+    <Compile Include="Data\Sql\LocationManager.cs" />
+    <Compile Include="Data\Sql\WeatherRecordManager.cs" />
+    <Compile Include="Exceptions\WeatherAnalysisException.cs" />
+    <Compile Include="Exceptions\WeatherRecordNotFoundException.cs" />
+    <Compile Include="Logic\FireHazardReportBuilder.cs" />
     <Compile Include="Model\FireHazardReport.cs" />
     <Compile Include="Model\Location.cs" />
     <Compile Include="Model\WeatherRecord.cs" />

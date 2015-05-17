@@ -5,9 +5,9 @@ using LinqToDB;
 using LinqToDB.Data;
 using WeatherAnalysis.Core.Model;
 
-namespace WeatherAnalysis.Core.Data
+namespace WeatherAnalysis.Core.Data.Sql
 {
-    public class FireHazardReportManager
+    public class FireHazardReportManager : IFireHazardReportManager
     {
         private readonly string _configurationString;
 
@@ -16,7 +16,7 @@ namespace WeatherAnalysis.Core.Data
             _configurationString = configurationString;
         }
 
-        public IReadOnlyCollection<FireHazardReport> Get(int? locationId, int? weatherRecordId)
+        public IReadOnlyCollection<FireHazardReport> Get(int? locationId = null, int? weatherRecordId = null)
         {
             using (var db = new DataConnection(_configurationString))
             {
