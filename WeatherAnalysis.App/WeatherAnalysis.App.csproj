@@ -81,7 +81,13 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Configuration\AppModule.cs" />
+    <Compile Include="Navigation\DialogNavigationService.cs" />
+    <Compile Include="Navigation\Dialogs.cs" />
+    <Compile Include="ViewModel\LocationSelectViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
+    <Compile Include="View\LocationSelectView.xaml.cs">
+      <DependentUpon>LocationSelectView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\MainView.xaml.cs">
       <DependentUpon>MainView.xaml</DependentUpon>
     </Compile>
@@ -115,6 +121,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="View\LocationSelectView.xaml">
+      <SubType>Form</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\MainView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
