@@ -22,6 +22,7 @@ namespace WeatherAnalysis.Core.Data.Sql
             using (var db = new DataConnection(_configurationString))
             {
                 var weatherRecords = db.GetTable<WeatherRecord>()
+                    .LoadWith(record => record.Location)
                     .Where(r => r.LocationId == locationId)
                     .Where(r => r.Created >= from)
                     .Where(r => r.Created <= to)
