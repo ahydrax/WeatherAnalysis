@@ -10,11 +10,7 @@ namespace WeatherAnalysis.Core.Model
         public int? Id { get; set; }
 
         [PrimaryKey, NotNull]
-        public int? LocationId
-        {
-            get { return Location.Id; }
-            set { Location.Id = value; }
-        }
+        public int? LocationId { get; set; }
 
         [Association(CanBeNull = false, ThisKey = "LocationId", OtherKey = "Id")]
         public Location Location { get; set; }
