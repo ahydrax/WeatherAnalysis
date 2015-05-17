@@ -121,6 +121,10 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\WeatherAnalysis.Core.Data.Sql\WeatherAnalysis.Core.Data.Sql.csproj">
+      <Project>{a1e72580-1b3f-4b3d-8ff1-c5f6adf38ac6}</Project>
+      <Name>WeatherAnalysis.Core.Data.Sql</Name>
+    </ProjectReference>
     <ProjectReference Include="..\WeatherAnalysis.Core\WeatherAnalysis.Core.csproj">
       <Project>{9f22c417-bfc7-4479-9091-76c26b031d84}</Project>
       <Name>WeatherAnalysis.Core</Name>
