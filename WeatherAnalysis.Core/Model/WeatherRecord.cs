@@ -41,6 +41,9 @@ namespace WeatherAnalysis.Core.Model
             }
         }
 
+        [Column]
+        public bool Rainy { get; set; }
+
         [NotColumn]
         public decimal DewPoint
         {
