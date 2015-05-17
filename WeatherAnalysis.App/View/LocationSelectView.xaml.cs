@@ -4,16 +4,15 @@ using WeatherAnalysis.App.ViewModel;
 
 namespace WeatherAnalysis.App.View
 {
-    public partial class MainView : Window
+    public partial class LocationSelectView : Window
     {
         [Inject]
-        public MainViewModel MainViewModel
+        public LocationSelectViewModel LocationSelectViewModel
         {
-            get { return (MainViewModel) DataContext; }
             set { DataContext = value; }
         }
 
-        public MainView()
+        public LocationSelectView()
         {
             InitializeComponent();
         }

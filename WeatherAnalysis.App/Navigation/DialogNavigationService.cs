@@ -27,7 +27,7 @@ namespace WeatherAnalysis.App.Navigation
             }
             else
             {
-                Trace.WriteLine(string.Format("This name {0} is already reserved for {1} type", name, _pages[name].FullName));
+                Trace.WriteLine(string.Format("Name {0} is already reserved for {1} type", name, _pages[name].FullName));
             }
         }
 

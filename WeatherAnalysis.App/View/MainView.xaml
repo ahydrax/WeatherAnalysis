@@ -1,8 +1,41 @@
 ﻿<Window x:Class="WeatherAnalysis.App.View.MainView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="MainView" Height="300" Width="300">
+        xmlns:c="clr-namespace:WeatherAnalysis.App.Converters"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="clr-namespace:WeatherAnalysis.App.ViewModel"
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance Type=vm:MainViewModel, IsDesignTimeCreatable=False}"
+        Title="MainView" Height="480" Width="640">
+    <Window.Resources>
+        <c:CurrentTimeZoneDateTimeConverter x:Key="TimeZoneDateTimeConverter"/>
+    </Window.Resources>
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
         
+        <StackPanel>
+            <TextBlock Text="{Binding SelectedLocation.Name}"/>
+            <Button Content="tratat" Command="{Binding NavigateToLocationSelectionCommand}"/>
+        </StackPanel>
+
+        <DataGrid Grid.Column="0" Grid.Row="1" CanUserResizeColumns="True" ItemsSource="{Binding WeatherRecords}" AutoGenerateColumns="False" IsReadOnly="True">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Время" Binding="{Binding Created, StringFormat=h:mm, Converter={StaticResource TimeZoneDateTimeConverter}}"/>
+                <DataGridTextColumn Header="Температура, &#186;C" Binding="{Binding Temperature, StringFormat=#.##}"/>
+                <DataGridTextColumn Header="Точка росы, &#186;C" Binding="{Binding DewPoint, StringFormat=#.##}"/>
+                <DataGridTextColumn Header="Влажность, %" Binding="{Binding Humidity, StringFormat=#}"/>
+                <DataGridCheckBoxColumn Header="Осадки (дождь)" Binding="{Binding Rainy}"/>
+               
+            </DataGrid.Columns>
+        </DataGrid>
     </Grid>
 </Window>
