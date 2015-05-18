@@ -15,7 +15,7 @@ namespace WeatherAnalysis.Core.Tests.Model
         [InlineData(25.0, 75, 20.3)]
         public void DewPoint(decimal temperature, decimal humidity, decimal dewPoint)
         {
-            var weatherRecord = new WeatherRecord {Temperature = temperature, Humidity = humidity};
+            var weatherRecord = new WeatherRecord { Temperature = temperature, Humidity = humidity };
 
             Assert.Equal(dewPoint, weatherRecord.DewPoint, 1);
         }
@@ -41,6 +41,22 @@ namespace WeatherAnalysis.Core.Tests.Model
             var weatherRecord = new WeatherRecord();
 
             Assert.Throws<ArgumentOutOfRangeException>(() => weatherRecord.Humidity = -1);
+        }
+
+        [Fact]
+        public void Precipitation_CantBeBelow_0()
+        {
+            var weatherRecord = new WeatherRecord();
+
+            Assert.Throws<ArgumentOutOfRangeException>(() => weatherRecord.Precipitation = -1);
+        }
+        
+        [Fact]
+        public void Precipitation_CanBeAbove_0()
+        {
+            var weatherRecord = new WeatherRecord();
+
+            weatherRecord.Precipitation = 4;
         }
     }
 }

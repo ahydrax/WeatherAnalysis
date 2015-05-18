@@ -16,6 +16,7 @@ namespace WeatherAnalysis.Core.Tests.Logic
             {
                 new WeatherRecord
                 {
+                    LocationId = Khabarovsk.Id,
                     Location = Khabarovsk,
                     Created = new DateTime(2015, 5, 31),
                     Temperature = 4.6M,
@@ -23,9 +24,10 @@ namespace WeatherAnalysis.Core.Tests.Logic
                 },
                 new WeatherRecord
                 {
+                    LocationId = Khabarovsk.Id,
                     Location = Khabarovsk,
                     Created = new DateTime(2015, 5, 1),
-                    Rainy = true
+                    Precipitation = 2
                 },
                 new FireHazardReport
                 {
