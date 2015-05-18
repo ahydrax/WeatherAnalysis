@@ -39,7 +39,7 @@ namespace WeatherAnalysis.Core.Data.Sql
                 var rainyWeatherRecord = db.GetTable<WeatherRecord>()
                     .Where(r => r.LocationId == current.LocationId)
                     .Where(r => r.Created <= current.Created)
-                    .LastOrDefault(r => r.Rainy);
+                    .LastOrDefault(r => r.Precipitation > 0);
 
                 if (rainyWeatherRecord == null) throw new WeatherRecordNotFoundException("No info found about last rainy day.");
 

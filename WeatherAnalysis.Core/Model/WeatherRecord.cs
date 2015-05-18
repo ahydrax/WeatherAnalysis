@@ -38,7 +38,15 @@ namespace WeatherAnalysis.Core.Model
         }
 
         [Column]
-        public bool Rainy { get; set; }
+        public decimal Precipitation
+        {
+            get { return _precipitation; }
+            set
+            {
+                if (value < 0) throw new ArgumentOutOfRangeException("Precipitation cannot be below 0.");
+                _precipitation = value;
+            }
+        }
 
         [NotColumn]
         public decimal DewPoint
@@ -52,6 +60,7 @@ namespace WeatherAnalysis.Core.Model
         }
 
         private decimal _humidity;
+        private decimal _precipitation;
         private const decimal AlphaCoefficient = 17.27M;
         private const decimal BetaCoefficient = 237.7M;
     }
