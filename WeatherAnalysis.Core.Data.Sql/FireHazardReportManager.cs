@@ -20,7 +20,10 @@ namespace WeatherAnalysis.Core.Data.Sql
         {
             using (var db = new DataConnection(_configurationString))
             {
-                var reports = db.GetTable<FireHazardReport>().Select(r => r);
+                var reports = db.GetTable<FireHazardReport>()
+                    .LoadWith(r => r.Location)
+                    .LoadWith(r => r.Weather)
+                    .Select(r => r);
 
                 if (locationId.HasValue)
                     reports = reports.Where(r => r.Location.Id == locationId.Value);
