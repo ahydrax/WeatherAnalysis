@@ -37,6 +37,17 @@ namespace WeatherAnalysis.Core.Model
             }
         }
 
+        [NotColumn]
+        public decimal DewPoint
+        {
+            get
+            {
+                var tau = AlphaCoefficient * Temperature / (BetaCoefficient + Temperature) + (decimal)Math.Log((double)Humidity / 100);
+                var dewPoint = BetaCoefficient * tau / (AlphaCoefficient - tau);
+                return dewPoint;
+            }
+        }
+
         [Column]
         public decimal Precipitation
         {
@@ -49,14 +60,9 @@ namespace WeatherAnalysis.Core.Model
         }
 
         [NotColumn]
-        public decimal DewPoint
+        public bool Rainy
         {
-            get
-            {
-                var tau = AlphaCoefficient * Temperature / (BetaCoefficient + Temperature) + (decimal)Math.Log((double)Humidity / 100);
-                var dewPoint = BetaCoefficient * tau / (AlphaCoefficient - tau);
-                return dewPoint;
-            }
+            get { return Precipitation >= 3; }
         }
 
         private decimal _humidity;
