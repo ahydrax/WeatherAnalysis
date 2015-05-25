@@ -51,6 +51,7 @@
     <Compile Include="Data\IWeatherRecordManager.cs" />
     <Compile Include="Exceptions\WeatherAnalysisException.cs" />
     <Compile Include="Exceptions\WeatherRecordNotFoundException.cs" />
+    <Compile Include="Exceptions\WeatherServiceException.cs" />
     <Compile Include="Logic\FireHazardReportBuilder.cs" />
     <Compile Include="Model\FireHazardReport.cs" />
     <Compile Include="Model\Location.cs" />

@@ -18,6 +18,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{6DE89C
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeatherAnalysis.Core.Data.Sql", "WeatherAnalysis.Core.Data.Sql\WeatherAnalysis.Core.Data.Sql.csproj", "{A1E72580-1B3F-4B3D-8FF1-C5F6ADF38AC6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeatherAnalysis.Core.Service.OpenWeather", "WeatherAnalysis.Core.Service.OpenWeather\WeatherAnalysis.Core.Service.OpenWeather.csproj", "{C20C771A-8EC5-4640-9CD0-E6190603D4EC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -40,6 +42,10 @@ Global
 		{A1E72580-1B3F-4B3D-8FF1-C5F6ADF38AC6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A1E72580-1B3F-4B3D-8FF1-C5F6ADF38AC6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A1E72580-1B3F-4B3D-8FF1-C5F6ADF38AC6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C20C771A-8EC5-4640-9CD0-E6190603D4EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C20C771A-8EC5-4640-9CD0-E6190603D4EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C20C771A-8EC5-4640-9CD0-E6190603D4EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C20C771A-8EC5-4640-9CD0-E6190603D4EC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
