@@ -1,10 +1,9 @@
-﻿using System.Windows;
-using Ninject;
+﻿using Ninject;
 using WeatherAnalysis.App.ViewModel;
 
 namespace WeatherAnalysis.App.View
 {
-    public partial class MainView : Window
+    public partial class MainView
     {
         [Inject]
         public MainViewModel MainViewModel
