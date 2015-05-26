@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Data;
 using GalaSoft.MvvmLight;
@@ -96,7 +97,7 @@ namespace WeatherAnalysis.App.ViewModel
             BindingOperations.EnableCollectionSynchronization(WeatherRecords, _weatherRecordsSyncRoot);
 
 
-            SelectedLocation = new Location { Id = 1, Name = "Khabarovsk" };
+            SelectedLocation = new Location { Id = 1, Name = "Хабаровск", SystemName = "Khabarovsk" };
 
             InitializeEventHandlers();
         }
@@ -129,9 +130,8 @@ namespace WeatherAnalysis.App.ViewModel
                 }).ContinueWith(task =>
                 {
                     InProgress = false;
-                    if (task.IsFaulted) return;
-                    if (task.IsCanceled) return;
-
+                    
+                    if (!task.IsCompleted || task.IsCanceled) return;
                     foreach (var weatherRecord in task.Result)
                     {
                         WeatherRecords.Add(weatherRecord);

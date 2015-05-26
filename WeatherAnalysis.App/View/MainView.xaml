@@ -8,13 +8,13 @@
                 xmlns:vm="clr-namespace:WeatherAnalysis.App.ViewModel"
                 mc:Ignorable="d"
                 d:DataContext="{d:DesignInstance Type=vm:MainViewModel, IsDesignTimeCreatable=False}"
-                Title="MainView" Height="480" Width="640">
+                Title="Рассчет коэффициента пожароопаности" Height="480" Width="640">
     <Window.Resources>
         <c:CurrentTimeZoneDateTimeConverter x:Key="TimeZoneDateTimeConverter"/>
     </Window.Resources>
     <ma:MetroWindow.RightWindowCommands>
         <ma:WindowCommands>
-            <Button Content="{Binding SelectedLocation.Name}"/>
+            <Button Content="{Binding SelectedLocation.Name}" Command="{Binding NavigateToLocationSelectionCommand}"/>
             <Button>
                 <Button.Content>
                     <Rectangle Height="20" Width="20" Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
@@ -26,7 +26,7 @@
             </Button>
         </ma:WindowCommands>
     </ma:MetroWindow.RightWindowCommands>
-    <Grid>
+    <Grid Style="{StaticResource BaseGridStyle}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition/>
@@ -37,7 +37,7 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <TextBlock Grid.Column="0" Grid.Row="0" Text="{Binding SelectedLocation.Name}" Style="{StaticResource LocationHeaderStyle}"/>
+        <TextBlock Grid.Column="0" Grid.Row="0" Text="{Binding SelectedLocation.Name}" Style="{StaticResource TextHeaderStyle}"/>
         <DatePicker Grid.Column="1" Grid.Row="0" SelectedDate="{Binding SelectedDate}" Style="{StaticResource BorderlessDatepickerStyle}"/>
 
 
