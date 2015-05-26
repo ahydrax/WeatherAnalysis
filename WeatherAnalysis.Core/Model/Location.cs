@@ -20,6 +20,24 @@ namespace WeatherAnalysis.Core.Model
             }
         }
 
+        [Column, NotNull]
+        public string SystemName
+        {
+            get { return _systemName; }
+            set
+            {
+                if (string.IsNullOrWhiteSpace(value)) throw new ArgumentException();
+                _systemName = value;
+            }
+        }
+        
+        [NotColumn]
+        public int WeatherRecordsCount { get; set; }
+
+        [NotColumn]
+        public int FireHazardReportsCount { get; set; }
+
         private string _name;
+        private string _systemName;
     }
 }

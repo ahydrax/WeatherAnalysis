@@ -20,7 +20,7 @@ namespace WeatherAnalysis.Core.Data.Sql
         {
             using (var db = new DataConnection(_configurationString))
             {
-                var locations = db.GetTable<Location>().Select(location => location);
+                var locations = CreateQuery(db);
                 return locations.ToArray();
             }
         }
@@ -31,12 +31,26 @@ namespace WeatherAnalysis.Core.Data.Sql
 
             using (var db = new DataConnection(_configurationString))
             {
-                var locations = db.GetTable<Location>()
-                    .Where(location => location.Name.Contains(namePart))
-                    .ToArray();
-
-                return locations;
+                var locations = CreateQuery(db).Where(location => location.Name.Contains(namePart));
+                return locations.ToArray();
             }
+        }
+
+        private static IQueryable<Location> CreateQuery(DataConnection db)
+        {
+            var locations =
+                from location in db.GetTable<Location>()
+                join report in db.GetTable<FireHazardReport>() on location.Id equals report.LocationId into reports
+                join record in db.GetTable<WeatherRecord>() on location.Id equals record.LocationId into records
+                select new Location
+                {
+                    Id = location.Id,
+                    Name = location.Name,
+                    SystemName = location.SystemName,
+                    FireHazardReportsCount = reports.Count(),
+                    WeatherRecordsCount = records.Count()
+                };
+            return locations;
         }
 
         public void Save(Location location)
