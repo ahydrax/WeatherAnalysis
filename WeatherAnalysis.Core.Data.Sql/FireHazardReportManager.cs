@@ -16,22 +16,19 @@ namespace WeatherAnalysis.Core.Data.Sql
             _configurationString = configurationString;
         }
 
-        public IReadOnlyCollection<FireHazardReport> Get(int? locationId = null, int? weatherRecordId = null)
+        public IReadOnlyCollection<FireHazardReport> Get(int locationId, DateTime from, DateTime to)
         {
             using (var db = new DataConnection(_configurationString))
             {
                 var reports = db.GetTable<FireHazardReport>()
                     .LoadWith(r => r.Location)
                     .LoadWith(r => r.Weather)
-                    .Select(r => r);
+                    .Select(r => r)
+                    .Where(r => r.Location.Id == locationId)
+                    .Where(r => r.Created >= from)
+                    .Where(r => r.Created <= to);
 
-                if (locationId.HasValue)
-                    reports = reports.Where(r => r.Location.Id == locationId.Value);
-
-                if (weatherRecordId.HasValue)
-                    reports = reports.Where(r => r.WeatherRecordId == weatherRecordId.Value);
-
-                return reports.ToArray();
+                return reports.OrderByDescending(r => r.Created).ToArray();
             }
         }
 
