@@ -22,14 +22,18 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <TextBlock Grid.Row="0" Text="Добавление города" Style="{StaticResource TextHeaderStyle}"/>
+        <TextBlock Grid.Row="0" Text="Добавление города" Style="{StaticResource LargeHeaderStyle}"/>
 
-        <TextBox Grid.Row="1" Text="{Binding Name}" Style="{StaticResource InputTextBoxStyle}" ma:TextBoxHelper.Watermark="Название населенного пункта" />
+        <TextBox Grid.Row="1" Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"
+                 Style="{StaticResource InputTextBoxStyle}"
+                 ma:TextBoxHelper.Watermark="Название населенного пункта" />
         <TextBlock Grid.Row="2" Style="{StaticResource SmallHintStyle}">
             Используется для отображения в системе и отчетах
         </TextBlock>
 
-        <TextBox Grid.Row="4" Text="{Binding SystemName}" Style="{StaticResource InputTextBoxStyle}" ma:TextBoxHelper.Watermark="Системное название" />
+        <TextBox Grid.Row="4" Text="{Binding SystemName, UpdateSourceTrigger=PropertyChanged}"
+                 Style="{StaticResource InputTextBoxStyle}"
+                 ma:TextBoxHelper.Watermark="Системное название" />
         <TextBlock Grid.Row="5" Style="{StaticResource SmallHintStyle}">
             Используется для запросов к службам предоставляющим погодные данные
         </TextBlock>

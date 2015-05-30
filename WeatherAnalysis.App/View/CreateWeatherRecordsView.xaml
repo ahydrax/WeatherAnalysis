@@ -24,7 +24,7 @@
 
         <TextBlock Grid.Row="0"
                    Text="Добавление погодных данных"
-                   Style="{StaticResource TextHeaderStyle}"/>
+                   Style="{StaticResource LargeHeaderStyle}"/>
 
         <TextBlock Grid.Row="1" Style="{StaticResource LargeHintStyle}">
             Для города <TextBlock Text="{Binding SelectedLocation.Name}"/>

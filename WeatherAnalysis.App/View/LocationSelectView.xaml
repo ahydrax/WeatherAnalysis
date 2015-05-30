@@ -18,7 +18,7 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <TextBlock Grid.Row="0" Text="Выбор города" Style="{StaticResource TextHeaderStyle}"/>
+        <TextBlock Grid.Row="0" Text="Выбор города" Style="{StaticResource LargeHeaderStyle}"/>
 
         <TextBox Grid.Row="1" Text="{Binding LocationsFilter, Delay=300, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource BorderlessTextBoxStyle}" ma:TextBoxHelper.Watermark="Фильтр"/>
 

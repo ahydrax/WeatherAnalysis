@@ -1,7 +1,10 @@
 ﻿<ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:c="clr-namespace:WeatherAnalysis.App.Converters"
     xmlns:model="clr-namespace:WeatherAnalysis.Core.Model;assembly=WeatherAnalysis.Core">
+    
+    <c:CurrentTimeZoneDateTimeConverter x:Key="CurrentTimeZoneDateTimeConverter"/>
     
     <Style x:Key="BaseGridStyle" TargetType="Grid">
         <Setter Property="Margin" Value="16"/>
@@ -31,26 +34,23 @@
         <Setter Property="BorderThickness" Value="0, 0, 0, 1"/>
     </Style>
  
-    <Style x:Key="TextHeaderStyle" TargetType="TextBlock">
+    <Style x:Key="LargeHeaderStyle" TargetType="TextBlock">
         <Setter Property="Margin" Value="0, 8, 0, 16"/>
         <Setter Property="FontWeight" Value="Light"/>
         <Setter Property="FontSize" Value="36"/>
         <Setter Property="TextOptions.TextFormattingMode" Value="Ideal" />
     </Style>
 
-    <Style x:Key="LocationHeaderStyle" TargetType="TextBlock">
+    <Style x:Key="SmallHeaderStyle" TargetType="TextBlock">
         <Setter Property="FontWeight" Value="Light"/>
         <Setter Property="FontSize" Value="24"/>
         <Setter Property="TextOptions.TextFormattingMode" Value="Ideal" />
     </Style>
 
-    <Style x:Key="SmallHintStyle" TargetType="TextBlock">
-        <Setter Property="Margin" Value="8, 0"/>
+    <Style x:Key="TinyHeaderStyle" TargetType="TextBlock">
         <Setter Property="FontWeight" Value="Light"/>
-        <Setter Property="FontSize" Value="12"/>
-        <Setter Property="FontStyle" Value="Italic"/>
+        <Setter Property="FontSize" Value="18"/>
         <Setter Property="TextOptions.TextFormattingMode" Value="Ideal" />
-        <Setter Property="Foreground" Value="Gray"/>
     </Style>
 
     <Style x:Key="LargeHintStyle" TargetType="TextBlock">
@@ -62,12 +62,21 @@
         <Setter Property="Foreground" Value="Gray"/>
     </Style>
 
-    <Style x:Key="LocationInfoStyle" TargetType="TextBlock">
+    <Style x:Key="SmallHintStyle" TargetType="TextBlock">
+        <Setter Property="Margin" Value="8, 0"/>
+        <Setter Property="FontWeight" Value="Light"/>
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="FontStyle" Value="Italic"/>
+        <Setter Property="TextOptions.TextFormattingMode" Value="Ideal" />
+        <Setter Property="Foreground" Value="Gray"/>
+    </Style>
+
+    <Style x:Key="InformationTextStyle" TargetType="TextBlock">
         <Setter Property="FontSize" Value="12"/>
         <Setter Property="Foreground" Value="Gray"/>
         <Setter Property="TextOptions.TextFormattingMode" Value="Ideal" />
     </Style>
-
+    
     <Style x:Key="CommandStackPanel" TargetType="StackPanel">
         <Setter Property="Orientation" Value="Horizontal"/>
         <Setter Property="HorizontalAlignment" Value="Right"/>
@@ -75,15 +84,30 @@
     
     <DataTemplate x:Key="LocationTemplate" DataType="{x:Type model:Location}">
         <StackPanel Margin="8, 4">
-            <TextBlock Text="{Binding Name}" Style="{StaticResource LocationHeaderStyle}"/>
-            <TextBlock Style="{StaticResource LocationInfoStyle}">
+            <TextBlock Text="{Binding Name}" Style="{StaticResource SmallHeaderStyle}"/>
+            <TextBlock Style="{StaticResource InformationTextStyle}">
                 Системное имя: <TextBlock Text="{Binding SystemName}"/><LineBreak/>
                 Записей о погоде: <TextBlock Text="{Binding WeatherRecordsCount}"/><LineBreak/>
                 Отчетов создано: <TextBlock Text="{Binding FireHazardReportsCount}"/>
             </TextBlock>
         </StackPanel>
     </DataTemplate>
-    
+
+    <DataTemplate x:Key="ReportTemplate" DataType="{x:Type model:FireHazardReport}">
+        <StackPanel Margin="8, 4">
+            <TextBlock Style="{StaticResource TinyHeaderStyle}">
+                Дата создания: <TextBlock Text="{Binding Created, StringFormat={}{0:HH:mm dd.MM.yyyy}, Converter={StaticResource CurrentTimeZoneDateTimeConverter}}"/>
+                <LineBreak/>
+                Коэффициент опасности: <TextBlock Text="{Binding FireHazardCoefficient, StringFormat=#.##}"/>
+            </TextBlock>
+            <TextBlock Style="{StaticResource InformationTextStyle}">
+                Последний дождливый день: <TextBlock Text="{Binding LastRainyDate, StringFormat={}{0:dd.MM.yyyy}}"/><LineBreak/>
+                Подписан: <TextBlock Text="{Binding SignedBy}"/><LineBreak/>
+                Системный идентификатор: <TextBlock Text="{Binding Id}"/>
+            </TextBlock>
+        </StackPanel>
+    </DataTemplate>
+
     <DataTemplate x:Key="WeatherRecordTemplate" DataType="{x:Type model:WeatherRecord}">
         <Grid>
             <Grid.ColumnDefinitions>
