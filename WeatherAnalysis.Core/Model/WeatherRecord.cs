@@ -42,7 +42,11 @@ namespace WeatherAnalysis.Core.Model
         {
             get
             {
-                var tau = AlphaCoefficient * Temperature / (BetaCoefficient + Temperature) + (decimal)Math.Log((double)Humidity / 100);
+                var tau = AlphaCoefficient*Temperature/(BetaCoefficient + Temperature);
+
+                if (Humidity > 0)
+                    tau += (decimal)Math.Log((double)Humidity / 100);
+
                 var dewPoint = BetaCoefficient * tau / (AlphaCoefficient - tau);
                 return dewPoint;
             }
