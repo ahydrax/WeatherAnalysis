@@ -93,6 +93,7 @@
     <Compile Include="Navigation\Dialogs.cs" />
     <Compile Include="Navigation\IParameterReceiver.cs" />
     <Compile Include="ViewModel\BaseViewModel.cs" />
+    <Compile Include="Helpers\ConclusionHelper.cs" />
     <Compile Include="ViewModel\CreateLocationViewModel.cs" />
     <Compile Include="ViewModel\CreateWeatherRecordsViewModel.cs" />
     <Compile Include="ViewModel\LocationSelectViewModel.cs" />
