@@ -8,8 +8,11 @@ namespace WeatherAnalysis.App.ViewModel
     public abstract class BaseViewModel : ViewModelBase
     {
         private bool _inProgress;
+
         protected readonly INavigationService NavigationService;
         protected readonly IMessenger Messenger;
+
+        private RelayCommand _cancelCommand;
         
         protected BaseViewModel(INavigationService navigationService, IMessenger messenger)
         {
@@ -28,18 +31,18 @@ namespace WeatherAnalysis.App.ViewModel
         }
 
         #region Common properties
-        // InProgress
+
         public const string InProgressPropertyName = "InProgress";
         public bool InProgress
         {
             get { return _inProgress; }
             set { Set(InProgressPropertyName, ref _inProgress, value); }
         }
+
         #endregion
 
         #region Common commands
-        // Cancel command
-        private RelayCommand _cancelCommand;
+
         public RelayCommand Cancel
         {
             get
@@ -48,6 +51,7 @@ namespace WeatherAnalysis.App.ViewModel
                     () => NavigationService.GoBack()));
             }
         }
+
         #endregion
     }
 }
