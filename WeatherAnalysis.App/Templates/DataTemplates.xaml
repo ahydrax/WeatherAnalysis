@@ -96,7 +96,7 @@
     <DataTemplate x:Key="ReportTemplate" DataType="{x:Type model:FireHazardReport}">
         <StackPanel Margin="8, 4">
             <TextBlock Style="{StaticResource TinyHeaderStyle}">
-                Дата создания: <TextBlock Text="{Binding Created, StringFormat={}{0:HH:mm dd.MM.yyyy}, Converter={StaticResource CurrentTimeZoneDateTimeConverter}}"/>
+                Дата создания: <TextBlock Text="{Binding Created, StringFormat={}{0:HH:mm dd.MM.yyyy}}"/>
                 <LineBreak/>
                 Коэффициент опасности: <TextBlock Text="{Binding FireHazardCoefficient, StringFormat=#.##}"/>
             </TextBlock>
@@ -107,21 +107,4 @@
             </TextBlock>
         </StackPanel>
     </DataTemplate>
-
-    <DataTemplate x:Key="WeatherRecordTemplate" DataType="{x:Type model:WeatherRecord}">
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-            
-            <TextBlock/>
-            <TextBlock/>
-            <TextBlock/>
-            <TextBlock/>
-
-        </Grid>
-    </DataTemplate>
-    <!-- Resource dictionary entries should be defined here. -->
 </ResourceDictionary>
