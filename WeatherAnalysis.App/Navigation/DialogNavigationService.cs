@@ -46,8 +46,15 @@ namespace WeatherAnalysis.App.Navigation
             if (_pages.ContainsKey(pageKey))
             {
                 var nextDialog = _kernel.Get(_pages[pageKey]) as Window;
+                if (nextDialog == null) return;
 
-                if (nextDialog != null) nextDialog.ShowDialog();
+                var nextDialogParameterReceiver = nextDialog.DataContext as IParameterReceiver;
+                if (nextDialogParameterReceiver != null)
+                {
+                    nextDialogParameterReceiver.ReceiveParameter(parameter);
+                }
+
+                nextDialog.ShowDialog();
             }
             else
             {
