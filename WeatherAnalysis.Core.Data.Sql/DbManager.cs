@@ -8,16 +8,16 @@ namespace WeatherAnalysis.Core.Data.Sql
 {
     public sealed class DbManager : IDbManager
     {
-        private readonly string _configurationName;
+        private readonly string _configurationString;
 
-        public DbManager(string configurationName)
+        public DbManager(string configurationString)
         {
-            _configurationName = configurationName;
+            _configurationString = configurationString;
         }
 
         public bool HasValidSchema()
         {
-            using (var db = new DataConnection(_configurationName))
+            using (var db = new DataConnection(_configurationString))
             {
                 try
                 {
@@ -36,7 +36,7 @@ namespace WeatherAnalysis.Core.Data.Sql
 
         public void CreateSchema()
         {
-            using (var db = new DataConnection(_configurationName))
+            using (var db = new DataConnection(_configurationString))
             {
                 CreateIfNotExists<Location>(db);
                 CreateIfNotExists<WeatherRecord>(db);
@@ -46,7 +46,7 @@ namespace WeatherAnalysis.Core.Data.Sql
 
         public void CleanUp()
         {
-            using (var db = new DataConnection(_configurationName))
+            using (var db = new DataConnection(_configurationString))
             {
                 DropIfExists<Location>(db);
                 DropIfExists<WeatherRecord>(db);
