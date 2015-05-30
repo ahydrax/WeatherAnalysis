@@ -1,9 +1,12 @@
-﻿using GalaSoft.MvvmLight.Views;
+﻿using GalaSoft.MvvmLight.Messaging;
+using GalaSoft.MvvmLight.Views;
 using Ninject.Modules;
 using WeatherAnalysis.App.Navigation;
 using WeatherAnalysis.App.View;
 using WeatherAnalysis.Core.Data;
 using WeatherAnalysis.Core.Data.Sql;
+using WeatherAnalysis.Core.Service;
+using WeatherAnalysis.Core.Service.OpenWeather;
 
 namespace WeatherAnalysis.App.Configuration
 {
@@ -13,6 +16,11 @@ namespace WeatherAnalysis.App.Configuration
 
         public override void Load()
         {
+            Kernel.Bind<IDbManager>()
+                .To<DbManager>()
+                .InSingletonScope()
+                .WithConstructorArgument("configurationString", DbConfigurationName);
+
             Kernel.Bind<ILocationManager>()
                 .To<LocationManager>()
                 .InSingletonScope()
@@ -28,9 +36,30 @@ namespace WeatherAnalysis.App.Configuration
                 .InSingletonScope()
                 .WithConstructorArgument("configurationString", DbConfigurationName);
 
+            Kernel.Bind<IMessenger>()
+                .To<Messenger>()
+                .InSingletonScope();
+
+            ConfigureWeatherService();
+            ConfigureNavigationService();
+        }
+
+        private void ConfigureWeatherService()
+        {
+            var openWeatherService = OpenWeatherService.CreateService();
+            Kernel.Bind<IWeatherService>()
+                .ToConstant(openWeatherService)
+                .InSingletonScope();
+        }
+
+        private void ConfigureNavigationService()
+        {
             var navigationService = new DialogNavigationService(KernelInstance);
-            navigationService.Register(Dialogs.Main, typeof(MainView));
-            navigationService.Register(Dialogs.LocationSelect, typeof(LocationSelectView));
+            navigationService.Register(Dialogs.Main, typeof (MainView));
+            navigationService.Register(Dialogs.LocationSelect, typeof (LocationSelectView));
+            navigationService.Register(Dialogs.CreateLocation, typeof (CreateLocationView));
+            navigationService.Register(Dialogs.CreateWeatherRecords, typeof (CreateWeatherRecordsView));
+            navigationService.Register(Dialogs.ReportBuilder, typeof(ReportBuilderView));
             Kernel.Bind<INavigationService>().ToConstant(navigationService);
         }
     }
