@@ -1,17 +1,14 @@
 ﻿using System;
-using System.Configuration;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.Configuration;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using RestSharp;
 using WeatherAnalysis.Core.Exceptions;
 using WeatherAnalysis.Core.Model;
 
 namespace WeatherAnalysis.Core.Service.OpenWeather
 {
-    public class OpenWeatherService
+    public class OpenWeatherService : IWeatherService
     {
         private const string BaseApiUrl = @"http://api.openweathermap.org/data/2.5/";
 
@@ -40,7 +37,7 @@ namespace WeatherAnalysis.Core.Service.OpenWeather
 
         public IReadOnlyCollection<WeatherRecord> GetWeatherData(Location location, DateTime from, DateTime to)
         {
-            var request = PrepareRequest(location.Name);
+            var request = PrepareRequest(location.SystemName);
             var response = _restClient.Execute<dynamic>(request);
 
             if (response.Data.list == null) throw new WeatherServiceException("Weather data load error.");
