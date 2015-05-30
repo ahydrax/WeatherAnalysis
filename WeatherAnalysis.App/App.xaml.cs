@@ -18,6 +18,7 @@ namespace WeatherAnalysis.App
 
             if (!dbm.HasValidSchema())
             {
+                dbm.CleanUp();
                 dbm.CreateSchema();
             }
 
