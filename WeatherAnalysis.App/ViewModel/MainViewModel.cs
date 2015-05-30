@@ -1,105 +1,51 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Data;
-using GalaSoft.MvvmLight;
-using GalaSoft.MvvmLight.Command;
+using GalaSoft.MvvmLight.CommandWpf;
+using GalaSoft.MvvmLight.Messaging;
 using GalaSoft.MvvmLight.Views;
-using Ninject.Planning.Bindings;
+using WeatherAnalysis.App.Model;
 using WeatherAnalysis.App.Navigation;
 using WeatherAnalysis.Core.Data;
-using WeatherAnalysis.Core.Data.Sql;
+using WeatherAnalysis.Core.Logic;
 using WeatherAnalysis.Core.Model;
-using WeatherAnalysis.Core.Service.OpenWeather;
 
 namespace WeatherAnalysis.App.ViewModel
 {
-    public class MainViewModel : ViewModelBase
+    public class MainViewModel : BaseViewModel
     {
         private readonly IWeatherRecordManager _weatherRecordManager;
-        private readonly INavigationService _navigationService;
+
+        private Location _selectedLocation;
+        private DateTime _selectedDate = DateTime.Today;
+        private WeatherRecord _selectedWeatherRecord;
+
+        private RelayCommand _selectLocationCommand;
+        private RelayCommand _createWeatherRecordsCommand;
+        private RelayCommand<WeatherRecord> _buildReportCommand;
+        private RelayCommand<WeatherRecord> _removeWeatherRecordCommand;
+        
         private readonly object _weatherRecordsSyncRoot = new object();
         public ObservableCollection<WeatherRecord> WeatherRecords { get; private set; }
 
-        // InProgress
-        public const string InProgressPropertyName = "InProgress";
-        private bool _inProgress = false;
-        public bool InProgress
-        {
-            get
-            {
-                return _inProgress;
-            }
-            set
-            {
-                Set(InProgressPropertyName, ref _inProgress, value);
-            }
-        }
-
-        // SelectedLocation
-        public const string SelectedLocationPropertyName = "SelectedLocation";
-        private Location _selectedLocation;
-        public Location SelectedLocation
-        {
-            get
-            {
-                return _selectedLocation;
-            }
-            set
-            {
-                Set(SelectedLocationPropertyName, ref _selectedLocation, value);
-            }
-        }
-
-        // SelectedDate
-        public const string SelectedDatePropertyName = "SelectedDate";
-        private DateTime _selectedDate = DateTime.Today;
-        public DateTime SelectedDate
-        {
-            get
-            {
-                return _selectedDate;
-            }
-            set
-            {
-                Set(SelectedDatePropertyName, ref _selectedDate, value);
-            }
-        }
-
-
-        private RelayCommand _navigateToLocationSelectionCommand;
-        /// <summary>
-        /// Gets the NavigateToLocationSelectionCommand.
-        /// </summary>
-        public RelayCommand NavigateToLocationSelectionCommand
-        {
-            get
-            {
-                return _navigateToLocationSelectionCommand ?? (_navigateToLocationSelectionCommand = new RelayCommand(
-                    ExecuteNavigateToLocationSelectionCommand,
-                    () => true));
-            }
-        }
-
-        private void ExecuteNavigateToLocationSelectionCommand()
-        {
-            _navigationService.NavigateTo(Dialogs.LocationSelect);
-        }
-
-        public MainViewModel(IWeatherRecordManager weatherRecordManager, INavigationService navigationService)
+        public MainViewModel(IWeatherRecordManager weatherRecordManager, INavigationService navigationService, IMessenger messenger)
+            : base(navigationService, messenger)
         {
             _weatherRecordManager = weatherRecordManager;
-            _navigationService = navigationService;
 
+            InitializeWeatherRecordsCollection();
+            InitializeEventHandlers();
+            Subscribe();
+        }
+
+        private void InitializeWeatherRecordsCollection()
+        {
             WeatherRecords = new ObservableCollection<WeatherRecord>();
             BindingOperations.EnableCollectionSynchronization(WeatherRecords, _weatherRecordsSyncRoot);
-
-
-            SelectedLocation = new Location { Id = 1, Name = "Хабаровск", SystemName = "Khabarovsk" };
-
-            InitializeEventHandlers();
         }
 
         private void InitializeEventHandlers()
@@ -111,33 +57,159 @@ namespace WeatherAnalysis.App.ViewModel
         {
             if (e.PropertyName == SelectedDatePropertyName)
             {
-                GetTodayWeather();   
+                GetWeatherRecords();
             }
         }
 
-        private void GetTodayWeather()
+        private void Subscribe()
         {
-            if (SelectedLocation != null)
-            {
-                Task.Run(() =>
-                {
-                    InProgress = true;
-                    WeatherRecords.Clear();
+            Messenger.Register<Location>(this, NewLocationSelected);
+            Messenger.Register<IReadOnlyCollection<WeatherRecord>>(this, WeatherRecordsCreated);
+        }
 
-                    var service = OpenWeatherService.CreateService();
-                    var data = service.GetWeatherData(SelectedLocation, SelectedDate, SelectedDate.AddDays(1));
-                    return data;
-                }).ContinueWith(task =>
+        private void NewLocationSelected(Location location)
+        {
+            if (location == null) return;
+
+            SelectedLocation = location;
+            GetWeatherRecords();
+        }
+
+        private void WeatherRecordsCreated(IReadOnlyCollection<WeatherRecord> weatherRecords)
+        {
+            var saveTask = Task.Run(() =>
+            {
+                foreach (var weatherRecord in weatherRecords)
                 {
-                    InProgress = false;
-                    
-                    if (!task.IsCompleted || task.IsCanceled) return;
-                    foreach (var weatherRecord in task.Result)
-                    {
-                        WeatherRecords.Add(weatherRecord);
-                    }
-                });
+                    _weatherRecordManager.Save(weatherRecord);
+                }
+            });
+
+            saveTask.ContinueWith(task => GetWeatherRecords());
+        }
+
+        private void GetWeatherRecords()
+        {
+            if (SelectedLocation == null || !SelectedLocation.Id.HasValue) return;
+
+            StartProgress();
+            WeatherRecords.Clear();
+
+            var refreshTask = Task.Run(() => _weatherRecordManager.Get(SelectedLocation.Id.Value, SelectedDate.Date, SelectedDate.Date.AddHours(24)));
+            refreshTask.ContinueWith(task => FinishProgress());
+            refreshTask.ContinueWith(task =>
+            {
+                if (task.IsFaulted || task.IsCanceled) return;
+                foreach (var weatherRecord in task.Result)
+                {
+                    WeatherRecords.Add(weatherRecord);
+                }
+            });
+            refreshTask.ContinueWith(task =>
+            {
+                if (task.IsFaulted)
+                {
+                    MessageBox.Show("Ошибка при загрузке данных");
+                }
+            });
+        }
+
+        #region Properties
+
+        public const string SelectedLocationPropertyName = "SelectedLocation";
+        public Location SelectedLocation
+        {
+            get { return _selectedLocation; }
+            set { Set(SelectedLocationPropertyName, ref _selectedLocation, value); }
+        }
+
+        public const string SelectedDatePropertyName = "SelectedDate";
+        public DateTime SelectedDate
+        {
+            get { return _selectedDate; }
+            set { Set(SelectedDatePropertyName, ref _selectedDate, value); }
+        }
+
+        public const string SelectedWeatherRecordPropertyName = "SelectedWeatherRecord";
+        public WeatherRecord SelectedWeatherRecord
+        {
+            get { return _selectedWeatherRecord; }
+            set { Set(SelectedWeatherRecordPropertyName, ref _selectedWeatherRecord, value); }
+        }
+
+        #endregion
+
+        #region Commands
+
+        public RelayCommand SelectLocation
+        {
+            get
+            {
+                return _selectLocationCommand ?? (_selectLocationCommand = new RelayCommand(
+                    () => NavigationService.NavigateTo(Dialogs.LocationSelect)));
             }
         }
+
+        public RelayCommand CreateWeatherRecords
+        {
+            get
+            {
+                return _createWeatherRecordsCommand ?? (_createWeatherRecordsCommand = new RelayCommand(
+                    ExecuteCreateWeatherRecords,
+                    CanExecuteCreateWeatherRecords));
+            }
+        }
+
+        private void ExecuteCreateWeatherRecords()
+        {
+            var parameter = new CreateWeatherRecordsParameter
+            {
+                Date = SelectedDate,
+                Location = SelectedLocation
+            };
+            NavigationService.NavigateTo(Dialogs.CreateWeatherRecords, parameter);
+        }
+
+        private bool CanExecuteCreateWeatherRecords()
+        {
+            return SelectedLocation != null;
+        }
+
+        public RelayCommand<WeatherRecord> BuildReport
+        {
+            get
+            {
+                return _buildReportCommand
+                    ?? (_buildReportCommand = new RelayCommand<WeatherRecord>(
+                        ExecuteBuildReport,
+                        record => record != null));
+            }
+        }
+
+        private void ExecuteBuildReport(WeatherRecord record)
+        {
+            var b = new FireHazardReportBuilder(_weatherRecordManager);
+            var report = b.BuildReport(record);
+            NavigationService.NavigateTo(Dialogs.ReportBuilder, report);
+        }
+
+        public RelayCommand<WeatherRecord> RemoveWeatherRecord
+        {
+            get
+            {
+                return _removeWeatherRecordCommand
+                    ?? (_removeWeatherRecordCommand = new RelayCommand<WeatherRecord>(
+                        ExecuteRemoveWeatherRecord,
+                        record => record != null));
+            }
+        }
+
+        private void ExecuteRemoveWeatherRecord(WeatherRecord record)
+        {
+            var removeTask = Task.Run(() => _weatherRecordManager.Delete(record));
+            removeTask.ContinueWith(task => GetWeatherRecords());
+        }
+
+        #endregion
     }
 }

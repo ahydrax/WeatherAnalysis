@@ -1,67 +1,47 @@
-﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using System.Windows.Data;
-using GalaSoft.MvvmLight;
-using GalaSoft.MvvmLight.Command;
+using GalaSoft.MvvmLight.CommandWpf;
+using GalaSoft.MvvmLight.Messaging;
 using GalaSoft.MvvmLight.Views;
+using WeatherAnalysis.App.Navigation;
 using WeatherAnalysis.Core.Data;
 using WeatherAnalysis.Core.Model;
 
 namespace WeatherAnalysis.App.ViewModel
 {
-    public class LocationSelectViewModel : ViewModelBase
+    public class LocationSelectViewModel : BaseViewModel
     {
         private readonly ILocationManager _locationManager;
-        private readonly INavigationService _navigationService;
 
-        public ICollectionView Locations { get { return LocationsSource.View; } }
-        public CollectionViewSource LocationsSource { get; private set; }
+        private RelayCommand _getLocationsCommand;
+        private RelayCommand _createLocationCommand;
+        private RelayCommand _selectLocationCommand;
+        private RelayCommand _removeLocationCommand;
 
-        // LocationsFilter
-        public const string LocationsFilterPropertyName = "LocationsFilter";
         private string _locationsFilter = string.Empty;
-        public string LocationsFilter
-        {
-            get
-            {
-                return _locationsFilter;
-            }
-            set
-            {
-                Set(LocationsFilterPropertyName, ref _locationsFilter, value);
-            }
-        }
+        private Location _selectedLocation;
 
-        public LocationSelectViewModel(ILocationManager locationManager, INavigationService navigationService)
+        private readonly ObservableCollection<Location> _locations = new ObservableCollection<Location>();
+        private readonly object _locationsSyncRoot = new object();
+        
+        public LocationSelectViewModel(ILocationManager locationManager, INavigationService navigationService, IMessenger messenger)
+            : base(navigationService, messenger)
         {
             _locationManager = locationManager;
-            _navigationService = navigationService;
             
-            var locations = new ObservableCollection<Location>
-            {
-                new Location
-                {
-                    Id = 1,
-                    Name = "Хабаровск",
-                    SystemName = "Khabarovsk",
-                    FireHazardReportsCount = 10,
-                    WeatherRecordsCount = 100
-                },
-                new Location
-                {
-                    Id = 2,
-                    Name = "Москва",
-                    SystemName = "Moscow",
-                    FireHazardReportsCount = 12,
-                    WeatherRecordsCount = 56
-                }
-            };
+            Messenger.Register<Location>(this, SaveLocation);
 
-            LocationsSource = new CollectionViewSource();
-            LocationsSource.Source = locations;
-            LocationsSource.Filter += (sender, args) =>
+            InitializeLocationsViewSource();
+            ExecuteGetLocations();
+        }
+
+        private void InitializeLocationsViewSource()
+        {
+            BindingOperations.EnableCollectionSynchronization(_locations, _locationsSyncRoot);
+            LocationsViewSource = new CollectionViewSource { Source = _locations };
+            LocationsViewSource.Filter += (sender, args) =>
             {
                 if (string.IsNullOrWhiteSpace(LocationsFilter))
                 {
@@ -75,39 +55,129 @@ namespace WeatherAnalysis.App.ViewModel
                     args.Accepted = item.Name.Contains(LocationsFilter);
                 }
             };
-
-            PropertyChanged += (sender, args) =>
-            {
-                if (args.PropertyName == LocationsFilterPropertyName)
-                {
-                    LocationsSource.View.Refresh();
-                }
-            };
         }
 
-        private RelayCommand _goBackCommand;
+        private void SaveLocation(Location location)
+        {
+            var saveTask = Task.Run(() => _locationManager.Save(location));
+            saveTask.ContinueWith(task => ExecuteGetLocations());
+        }
 
-        /// <summary>
-        /// Gets the GoBackCommand.
-        /// </summary>
-        public RelayCommand GoBackCommand
+        #region Properties
+        public ICollectionView LocationsView { get { return LocationsViewSource.View; } }
+        public CollectionViewSource LocationsViewSource { get; private set; }
+
+        public const string SelectedLocationPropertyName = "SelectedLocation";
+        public Location SelectedLocation
+        {
+            get { return _selectedLocation; }
+            set { Set(SelectedLocationPropertyName, ref _selectedLocation, value); }
+        }
+
+        public const string LocationsFilterPropertyName = "LocationsFilter";
+        public string LocationsFilter
+        {
+            get { return _locationsFilter; }
+            set
+            {
+                if (_locationsFilter == value)
+                    return;
+
+                _locationsFilter = value;
+                RaisePropertyChanged();
+                LocationsViewSource.View.Refresh();
+            }
+        }
+        #endregion
+
+        #region Commands
+        // Get Locations Command
+        public RelayCommand GetLocations
         {
             get
             {
-                return _goBackCommand ?? (_goBackCommand = new RelayCommand(
-                    ExecuteGoBackCommand,
-                    CanExecuteGoBackCommand));
+                return _getLocationsCommand ?? (_getLocationsCommand = new RelayCommand(
+                    ExecuteGetLocations,
+                    () => true));
             }
         }
 
-        private void ExecuteGoBackCommand()
+        private void ExecuteGetLocations()
         {
-            _navigationService.GoBack();
+            StartProgress();
+            LocationsFilter = string.Empty;
+            _locations.Clear();
+
+            var locationGetTask = Task.Run(() => _locationManager.GetAll());
+            locationGetTask.ContinueWith(task => FinishProgress());
+
+            locationGetTask.ContinueWith(task =>
+            {
+                if (task.IsFaulted) return;
+
+                foreach (var location in task.Result)
+                {
+                    _locations.Add(location);
+                }
+            });
+
+            locationGetTask.ContinueWith(task =>
+            {
+                if (task.IsFaulted)
+                {
+
+                }
+            });
         }
 
-        private bool CanExecuteGoBackCommand()
+        // Create Location Command
+        public RelayCommand CreateLocation
         {
-            return true;
+            get
+            {
+                return _createLocationCommand ?? (_createLocationCommand = new RelayCommand(
+                    () => NavigationService.NavigateTo(Dialogs.CreateLocation)));
+            }
         }
+
+        // Select Location Command
+        public RelayCommand SelectLocation
+        {
+            get
+            {
+                return _selectLocationCommand ?? (_selectLocationCommand = new RelayCommand(
+                    ExecuteSelectLocation,
+                    () => SelectedLocation != null));
+            }
+        }
+
+        private void ExecuteSelectLocation()
+        {
+            Messenger.Send(SelectedLocation);
+            NavigationService.GoBack();
+        }
+
+        // Remove Location Command
+        public RelayCommand RemoveLocation
+        {
+            get
+            {
+                return _removeLocationCommand ?? (_removeLocationCommand = new RelayCommand(
+                    ExecuteRemoveLocation,
+                    () => SelectedLocation != null));
+            }
+        }
+
+        private void ExecuteRemoveLocation()
+        {
+            var selectedLocation = SelectedLocation;
+
+            _locations.Remove(SelectedLocation);
+            SelectedLocation = null;
+
+            var removeTask = Task.Run(() => _locationManager.Delete(selectedLocation));
+            removeTask.ContinueWith(task => ExecuteGetLocations());
+        }
+        #endregion
     }
 }
