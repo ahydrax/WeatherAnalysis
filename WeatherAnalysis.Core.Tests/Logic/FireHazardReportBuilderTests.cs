@@ -22,13 +22,7 @@ namespace WeatherAnalysis.Core.Tests.Logic
                     Temperature = 4.6M,
                     Humidity = 35
                 },
-                new WeatherRecord
-                {
-                    LocationId = Khabarovsk.Id,
-                    Location = Khabarovsk,
-                    Created = new DateTime(2015, 5, 1),
-                    Precipitation = 2
-                },
+                new DateTime(2015, 5, 1),
                 new FireHazardReport
                 {
                     FireHazardCoefficient = 1951
@@ -37,12 +31,12 @@ namespace WeatherAnalysis.Core.Tests.Logic
         };
 
         [Theory, MemberData("TheoryObjects")]
-        public void BuildReportTest(WeatherRecord current, WeatherRecord rainy, FireHazardReport expectedReport)
+        public void BuildReportTest(WeatherRecord current, DateTime lastRainyDay, FireHazardReport expectedReport)
         {
             var manager = new Mock<IWeatherRecordManager>();
             manager.Setup(
-                recordManager => recordManager.GetLastRainyWeatherRecord(current))
-                .Returns(rainy);
+                recordManager => recordManager.GetLastRainyDay(current.LocationId.Value, It.IsAny<DateTime>(), It.IsAny<DateTime>()))
+                .Returns(lastRainyDay);
 
             var builder = new FireHazardReportBuilder(manager.Object);
 

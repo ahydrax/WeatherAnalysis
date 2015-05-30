@@ -19,15 +19,18 @@ namespace WeatherAnalysis.Core.Model
         public int? LocationId { get; set; }
 
         [Association(CanBeNull = false, ThisKey = "LocationId", OtherKey = "Id")]
-        public Location Location
-        {
-            get { return Weather.Location; }
-        }
+        public Location Location { get; set; }
 
         [Column]
         public DateTime Created { get; set; }
 
         [Column]
         public decimal FireHazardCoefficient { get; set; }
+
+        [Column]
+        public DateTime LastRainyDate { get; set; }
+
+        [Column]
+        public string SignedBy { get; set; }
     }
 }

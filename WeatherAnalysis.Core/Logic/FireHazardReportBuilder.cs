@@ -19,29 +19,31 @@ namespace WeatherAnalysis.Core.Logic
             if (record.Location == null) throw new ArgumentException("record.Location");
             if (record.LocationId == null) throw new ArgumentException("record.LocationId");
 
+            var lastRainyWeather = _weatherRecordManager.GetLastRainyDay(record.LocationId.Value, record.Created.AddMonths(-2), record.Created.Date);
+            var daysWithoutRain = DaysWithoutRain(record, lastRainyWeather);
+
             var report = new FireHazardReport
             {
                 Created = DateTime.Now,
-                Weather = record
+                WeatherRecordId = record.Id,
+                Weather = record,
+                LocationId = record.LocationId,
+                Location = record.Location,
+                LastRainyDate = lastRainyWeather,
+                FireHazardCoefficient = CalculateFireHazardCoefficient(record, daysWithoutRain)
             };
-
-            var lastRainyWeather = _weatherRecordManager.GetLastRainyWeatherRecord(record);
-
-            var daysWithoutRain = DaysWithoutRain(record, lastRainyWeather);
-
-            report.FireHazardCoefficient = CalculateFireHazardCoefficient(record, daysWithoutRain);
 
             return report;
         }
 
         private static decimal CalculateFireHazardCoefficient(WeatherRecord record, int daysWithoutRain)
         {
-            return daysWithoutRain*(record.Temperature - record.DewPoint)*record.Temperature;
+            return daysWithoutRain * (record.Temperature - record.DewPoint) * record.Temperature;
         }
 
-        private static int DaysWithoutRain(WeatherRecord currentWeather, WeatherRecord lastRainyWeather)
+        private static int DaysWithoutRain(WeatherRecord currentWeather, DateTime lastRainyDay)
         {
-            return Convert.ToInt32(Math.Ceiling((currentWeather.Created - lastRainyWeather.Created).TotalDays));
+            return Convert.ToInt32(Math.Ceiling((currentWeather.Created - lastRainyDay).TotalDays));
         }
     }
 }
