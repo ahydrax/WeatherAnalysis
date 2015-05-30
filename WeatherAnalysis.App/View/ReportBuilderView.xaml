@@ -6,8 +6,10 @@
                 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                 xmlns:ma="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
                 xmlns:vm="clr-namespace:WeatherAnalysis.App.ViewModel"
+                xmlns:view="clr-namespace:WeatherAnalysis.App.View"
                 mc:Ignorable="d" d:DataContext="{d:DesignInstance Type=vm:ReportBuilderViewModel, IsDesignTimeCreatable=False}"
                 Title="Рассчет коэффициента пожароопаности"
+                Name="Window"
                 WindowStartupLocation="CenterScreen"
                 Width="1200"
                 MinWidth="800" MinHeight="600">
@@ -21,6 +23,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
         <Grid.ColumnDefinitions>
@@ -29,20 +32,20 @@
         </Grid.ColumnDefinitions>
 
         <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
-                   Style="{StaticResource TextHeaderStyle}">
+                   Style="{StaticResource LargeHeaderStyle}">
             Построение отчета
         </TextBlock>
 
         <FlowDocumentReader Grid.Row="1" Grid.Column="0"
                             ViewingMode="Scroll"
-                            HorizontalAlignment="Stretch"
-                            BorderThickness="1" BorderBrush="{StaticResource AccentColorBrush}">
-            <FlowDocument PageWidth="21.0cm" PageHeight="27.9cm"
+                            HorizontalAlignment="Stretch">
+            <FlowDocument PageWidth="21.0cm" PageHeight="27.9cm" Name="FlowDocument"
                           PagePadding="1.5cm, 0.5cm, 0.5cm, 0.5cm"
                           ColumnWidth="21.0cm" IsColumnWidthFlexible="false" FontFamily="Times New Roman" FontSize="16">
                 <Paragraph FontSize="24" TextAlignment="Center">
                     Оценка пожарной опасности для города
                     <Run Text="{Binding SelectedWeatherRecord.Location.Name}"/>
+                    <LineBreak/>
                 </Paragraph>
                 <Paragraph>
                     Погодные данные получены по состоянию на
@@ -75,26 +78,52 @@
                     </ListItem>
                 </List>
                 <Paragraph>
+                    <LineBreak/>
                     Вывод:
                     <Run Text="{Binding Conclusion}"/>
                 </Paragraph>
                 <Paragraph>
+                    <LineBreak/>
                     Дата создания:
                     <Run Text="{Binding SelectedReport.Created, StringFormat={}{0:HH:mm dd.MM.yyyy}, Converter={StaticResource TimeZoneDateTimeConverter}}"/>
                 </Paragraph>
                 <Paragraph TextAlignment="Right">
                     Подписал:
-                    <TextBlock Text="{Binding SignedBy}" TextAlignment="Right"/>
+                    <Run Text="{Binding SignedBy}"/>
                 </Paragraph>
             </FlowDocument>
         </FlowDocumentReader>
 
-        <StackPanel Grid.Row="2" Grid.Column="0" Orientation="Horizontal">
-            <TextBox Width="200" ma:TextBoxHelper.Watermark="Подписал" Text="{Binding SignedBy, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource InputTextBoxStyle}"/>
-            <Button Content="Сохранить отчет"/>
-            <Button Content="Распечатать отчет"/>
-        </StackPanel>
-
-
+        <Grid Grid.Row="1" Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            
+            <TextBlock Grid.Row="0" Text="Настройки отчета" Style="{StaticResource SmallHeaderStyle}"/>
+            
+            <TextBox Grid.Row="1"
+                     Text="{Binding SignedBy, UpdateSourceTrigger=PropertyChanged}"
+                     Style="{StaticResource InputTextBoxStyle}"
+                     ma:TextBoxHelper.Watermark="Подписал"/>
+            
+            <Button Grid.Row="2" Content="Распечатать отчет"
+                    Command="{Binding PrintReport}"
+                    CommandParameter="{Binding Path=DocumentText, RelativeSource={RelativeSource AncestorType=view:ReportBuilderView}}"/>
+            
+            <Button Grid.Row="3" Content="Сохранить отчет" 
+                    Command="{Binding SaveReport}"
+                    CommandParameter="{Binding Path=DocumentText, RelativeSource={RelativeSource AncestorType=view:ReportBuilderView}}"/>
+            
+            <TextBlock Grid.Row="4" Text="Недавние отчеты" Style="{StaticResource SmallHeaderStyle}"/>
+            
+            <ListView Grid.Row="5" ItemsSource="{Binding RecentReports}"
+                ItemTemplate="{StaticResource ReportTemplate}"/>
+            <ma:ProgressRing Grid.Row="5" IsActive="{Binding InProgress}"/>
+        </Grid>
     </Grid>
 </ma:MetroWindow>
