@@ -6,15 +6,17 @@
                 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                 xmlns:ma="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
                 xmlns:vm="clr-namespace:WeatherAnalysis.App.ViewModel"
-                mc:Ignorable="d"
-                d:DataContext="{d:DesignInstance Type=vm:MainViewModel, IsDesignTimeCreatable=False}"
-                Title="Рассчет коэффициента пожароопаности" Height="480" Width="640">
+                mc:Ignorable="d" d:DataContext="{d:DesignInstance Type=vm:MainViewModel, IsDesignTimeCreatable=False}"
+                Title="Рассчет коэффициента пожароопаности"
+                WindowStartupLocation="CenterScreen"
+                Width="820" Height="500"
+                MinWidth="700" MinHeight="400">
     <Window.Resources>
-        <c:CurrentTimeZoneDateTimeConverter x:Key="TimeZoneDateTimeConverter"/>
+        <ResourceDictionary Source="../Templates/WeatherRecordGridColumns.xaml"/>
     </Window.Resources>
     <ma:MetroWindow.RightWindowCommands>
         <ma:WindowCommands>
-            <Button Content="{Binding SelectedLocation.Name}" Command="{Binding NavigateToLocationSelectionCommand}"/>
+            <Button Content="{Binding SelectedLocation.Name, FallbackValue='Выбрать город'}" Command="{Binding SelectLocation}"/>
             <Button>
                 <Button.Content>
                     <Rectangle Height="20" Width="20" Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
@@ -37,32 +39,44 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <TextBlock Grid.Column="0" Grid.Row="0" Text="{Binding SelectedLocation.Name}" Style="{StaticResource TextHeaderStyle}"/>
-        <DatePicker Grid.Column="1" Grid.Row="0" SelectedDate="{Binding SelectedDate}" Style="{StaticResource BorderlessDatepickerStyle}"/>
+        <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
+                   Text="{Binding SelectedLocation.Name, FallbackValue='Не выбран город'}"
+                   Style="{StaticResource TextHeaderStyle}"/>
+        
+        <DatePicker Grid.Column="1" Grid.Row="0"
+                    SelectedDate="{Binding SelectedDate}"
+                    Style="{StaticResource BorderlessDatepickerStyle}"/>
 
-
-        <DataGrid Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" CanUserResizeColumns="True" ItemsSource="{Binding WeatherRecords}" AutoGenerateColumns="False" IsReadOnly="True">
+        <DataGrid Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2"
+                  Name="WeatherRecordsDataGrid"
+                  ItemsSource="{Binding WeatherRecords}"
+                  SelectedItem="{Binding SelectedWeatherRecord}"
+                  IsSynchronizedWithCurrentItem="True"
+                  ColumnWidth="*"
+                  CanUserResizeColumns="True" AutoGenerateColumns="False" IsReadOnly="True">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Время" Binding="{Binding Created, Mode=OneWay, StringFormat=\{0:HH:mm\}, Converter={StaticResource TimeZoneDateTimeConverter}}"/>
-                <DataGridTextColumn Header="Температура, &#186;C" Binding="{Binding Temperature, Mode=OneWay, StringFormat=\{0:0.00\}}"/>
-                <DataGridTextColumn Header="Точка росы, &#186;C" Binding="{Binding DewPoint, Mode=OneWay, StringFormat=\{0:0.00\}}"/>
-                <DataGridTextColumn Header="Влажность, %" Binding="{Binding Humidity, Mode=OneWay, StringFormat=\{0:0\}}"/>
-                <DataGridTextColumn Header="Осадки, мм" Binding="{Binding Precipitation, Mode=OneWay, StringFormat=\{0:0.00\}}"/>
-                <DataGridCheckBoxColumn Header="Дождь" Binding="{Binding Rainy, Mode=OneWay}"/>
+                <StaticResource ResourceKey="TimeColumn"/>
+                <StaticResource ResourceKey="TemperatureColumn"/>
+                <StaticResource ResourceKey="DewPointColumn"/>
+                <StaticResource ResourceKey="HumidityColumn"/>
+                <StaticResource ResourceKey="PrecipitationColumn"/>
+                <StaticResource ResourceKey="RainyColumn"/>
             </DataGrid.Columns>
             <DataGrid.ContextMenu>
                 <ContextMenu>
-                    <MenuItem Header="Добавить"/>
-                    <MenuItem Header="Удалить"/>
+                    <MenuItem Header="Добавить" Command="{Binding CreateWeatherRecords}"/>
+                    <MenuItem Header="Удалить"
+                              Command="{Binding RemoveWeatherRecord}"
+                              CommandParameter="{Binding SelectedWeatherRecord}"/>
                 </ContextMenu>
             </DataGrid.ContextMenu>
         </DataGrid>
         <ma:ProgressRing Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" IsActive="{Binding InProgress}"/>
 
-        <StackPanel Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2" Orientation="Horizontal">
-            <Button Content="Сформировать отчет"/>
+        <StackPanel Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2" Style="{StaticResource CommandStackPanel}">
+            <Button Content="Сформировать отчет"
+                    Command="{Binding BuildReport}"
+                    CommandParameter="{Binding SelectedWeatherRecord}"/>
         </StackPanel>
-
-
     </Grid>
 </ma:MetroWindow>

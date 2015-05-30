@@ -5,31 +5,43 @@
                 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                 xmlns:ma="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
                 xmlns:vm="clr-namespace:WeatherAnalysis.App.ViewModel"
-                mc:Ignorable="d"
-                d:DataContext="{d:DesignInstance Type=vm:LocationSelectViewModel, IsDesignTimeCreatable=False}"
-                Title="Выбор локации" Width="640" Height="480">
+                mc:Ignorable="d" d:DataContext="{d:DesignInstance Type=vm:LocationSelectViewModel, IsDesignTimeCreatable=False}"
+                Title="Выбор города"
+                WindowStartupLocation="CenterScreen"
+                Width="720" Height="500"
+                MinWidth="640" MinHeight="480">
     <Grid Style="{StaticResource BaseGridStyle}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition />
-        </Grid.ColumnDefinitions>
-        
-        <TextBlock Grid.Row="0" Grid.Column="0" Text="Выбор локации" Style="{StaticResource TextHeaderStyle}"/>
+        <TextBlock Grid.Row="0" Text="Выбор города" Style="{StaticResource TextHeaderStyle}"/>
 
         <TextBox Grid.Row="1" Text="{Binding LocationsFilter, Delay=300, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource BorderlessTextBoxStyle}" ma:TextBoxHelper.Watermark="Фильтр"/>
 
-        <ListView Grid.Row="2" Grid.Column="0" ItemTemplate="{StaticResource LocationTemplate}" ItemsSource="{Binding Locations}"/>
+        <ListView Grid.Row="2"
+                  ItemTemplate="{StaticResource LocationTemplate}"
+                  ItemsSource="{Binding LocationsView}"
+                  SelectedItem="{Binding SelectedLocation}"
+                  IsSynchronizedWithCurrentItem="True">
+            <ListView.ContextMenu>
+                <ContextMenu Margin="8">
+                    <MenuItem Header="Создать" Command="{Binding CreateLocation}"/>
+                    <MenuItem Header="Удалить выбранный" Command="{Binding RemoveLocation}"/>
+                    <Separator/>
+                    <MenuItem Header="Обновить" Command="{Binding GetLocations}"/>
+                </ContextMenu>
+            </ListView.ContextMenu>
+        </ListView>
+
+        <ma:ProgressRing Grid.Row="2" IsActive="{Binding InProgress}"/>
         
-        <StackPanel Grid.Row="3" Grid.Column="0" Orientation="Horizontal">
-            <Button Content="Сохранить"/>
-            <Button Content="Отменить"/>
+        <StackPanel Grid.Row="3" Grid.Column="0" Style="{StaticResource CommandStackPanel}">
+            <Button Content="Выбрать" Command="{Binding SelectLocation}"/>
+            <Button Content="Отменить" Command="{Binding Cancel}"/>
         </StackPanel>
     </Grid>
 </ma:MetroWindow>

@@ -1,0 +1,100 @@
+﻿<ma:MetroWindow x:Class="WeatherAnalysis.App.View.ReportBuilderView"
+                xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                xmlns:c="clr-namespace:WeatherAnalysis.App.Converters"
+                xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                xmlns:ma="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+                xmlns:vm="clr-namespace:WeatherAnalysis.App.ViewModel"
+                mc:Ignorable="d" d:DataContext="{d:DesignInstance Type=vm:ReportBuilderViewModel, IsDesignTimeCreatable=False}"
+                Title="Рассчет коэффициента пожароопаности"
+                WindowStartupLocation="CenterScreen"
+                Width="1200"
+                MinWidth="800" MinHeight="600">
+    <Window.Resources>
+        <c:CurrentTimeZoneDateTimeConverter x:Key="TimeZoneDateTimeConverter"/>
+    </Window.Resources>
+    <Grid Style="{StaticResource BaseGridStyle}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="3*" MinWidth="500"/>
+            <ColumnDefinition Width="*" MinWidth="300"/>
+        </Grid.ColumnDefinitions>
+
+        <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
+                   Style="{StaticResource TextHeaderStyle}">
+            Построение отчета
+        </TextBlock>
+
+        <FlowDocumentReader Grid.Row="1" Grid.Column="0"
+                            ViewingMode="Scroll"
+                            HorizontalAlignment="Stretch"
+                            BorderThickness="1" BorderBrush="{StaticResource AccentColorBrush}">
+            <FlowDocument PageWidth="21.0cm" PageHeight="27.9cm"
+                          PagePadding="1.5cm, 0.5cm, 0.5cm, 0.5cm"
+                          ColumnWidth="21.0cm" IsColumnWidthFlexible="false" FontFamily="Times New Roman" FontSize="16">
+                <Paragraph FontSize="24" TextAlignment="Center">
+                    Оценка пожарной опасности для города
+                    <Run Text="{Binding SelectedWeatherRecord.Location.Name}"/>
+                </Paragraph>
+                <Paragraph>
+                    Погодные данные получены по состоянию на
+                    <Span>
+                        <Run Text="{Binding SelectedWeatherRecord.Created, StringFormat={}{0:HH:mm dd.MM.yyyy}, Converter={StaticResource TimeZoneDateTimeConverter}}"/>
+                    </Span>
+                </Paragraph>
+                <List>
+                    <ListItem>
+                        <Paragraph>Температура
+                            <Run Text="{Binding SelectedWeatherRecord.Temperature, StringFormat={}{0:0.0}}"/> &#186;C
+                        </Paragraph>
+                    </ListItem>
+                    <ListItem>
+                        <Paragraph>Точка росы
+                            <Run Text="{Binding SelectedWeatherRecord.DewPoint, Mode=OneWay, StringFormat={}{0:0.0}}"/> &#186;C
+                        </Paragraph>
+                    </ListItem>
+                    <ListItem>
+                        <Paragraph>
+                            Влажность
+                            <Run Text="{Binding SelectedWeatherRecord.Temperature, StringFormat={}{0:0.0}}"/> %
+                        </Paragraph>
+                    </ListItem>
+                    <ListItem>
+                        <Paragraph>
+                            Последний дождливый день был
+                            <Run Text="{Binding SelectedReport.LastRainyDate, StringFormat={}{0:dd.MM.yyyy}}"/>
+                        </Paragraph>
+                    </ListItem>
+                </List>
+                <Paragraph>
+                    Вывод:
+                    <Run Text="{Binding Conclusion}"/>
+                </Paragraph>
+                <Paragraph>
+                    Дата создания:
+                    <Run Text="{Binding SelectedReport.Created, StringFormat={}{0:HH:mm dd.MM.yyyy}, Converter={StaticResource TimeZoneDateTimeConverter}}"/>
+                </Paragraph>
+                <Paragraph TextAlignment="Right">
+                    Подписал:
+                    <TextBlock Text="{Binding SignedBy}" TextAlignment="Right"/>
+                </Paragraph>
+            </FlowDocument>
+        </FlowDocumentReader>
+
+        <StackPanel Grid.Row="2" Grid.Column="0" Orientation="Horizontal">
+            <TextBox Width="200" ma:TextBoxHelper.Watermark="Подписал" Text="{Binding SignedBy, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource InputTextBoxStyle}"/>
+            <Button Content="Сохранить отчет"/>
+            <Button Content="Распечатать отчет"/>
+        </StackPanel>
+
+
+    </Grid>
+</ma:MetroWindow>

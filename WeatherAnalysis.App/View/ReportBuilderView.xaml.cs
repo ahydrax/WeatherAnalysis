@@ -3,15 +3,15 @@ using WeatherAnalysis.App.ViewModel;
 
 namespace WeatherAnalysis.App.View
 {
-    public partial class MainView
+    public partial class ReportBuilderView
     {
         [Inject]
-        public MainViewModel MainViewModel
+        public ReportBuilderViewModel ReportBuilderViewModel
         {
             set { DataContext = value; }
         }
 
-        public MainView()
+        public ReportBuilderView()
         {
             InitializeComponent();
         }
