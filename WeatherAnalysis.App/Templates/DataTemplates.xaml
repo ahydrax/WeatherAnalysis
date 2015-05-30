@@ -4,7 +4,7 @@
     xmlns:model="clr-namespace:WeatherAnalysis.Core.Model;assembly=WeatherAnalysis.Core">
     
     <Style x:Key="BaseGridStyle" TargetType="Grid">
-        <Setter Property="Margin" Value="8"/>
+        <Setter Property="Margin" Value="16"/>
     </Style>
     
     <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
@@ -18,31 +18,67 @@
         <Setter Property="VerticalAlignment" Value="Center"/>
     </Style>
     
+    <Style x:Key="TextBoxStyle" TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
+        <Setter Property="Margin" Value="2"/>
+    </Style>
+    
     <Style x:Key="BorderlessTextBoxStyle" TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
         <Setter Property="BorderThickness" Value="0"/>
     </Style>
     
+    <Style x:Key="InputTextBoxStyle" TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
+        <Setter Property="Margin" Value="2"/>
+        <Setter Property="BorderThickness" Value="0, 0, 0, 1"/>
+    </Style>
+ 
     <Style x:Key="TextHeaderStyle" TargetType="TextBlock">
+        <Setter Property="Margin" Value="0, 8, 0, 16"/>
         <Setter Property="FontWeight" Value="Light"/>
         <Setter Property="FontSize" Value="36"/>
+        <Setter Property="TextOptions.TextFormattingMode" Value="Ideal" />
     </Style>
 
     <Style x:Key="LocationHeaderStyle" TargetType="TextBlock">
         <Setter Property="FontWeight" Value="Light"/>
         <Setter Property="FontSize" Value="24"/>
+        <Setter Property="TextOptions.TextFormattingMode" Value="Ideal" />
+    </Style>
+
+    <Style x:Key="SmallHintStyle" TargetType="TextBlock">
+        <Setter Property="Margin" Value="8, 0"/>
+        <Setter Property="FontWeight" Value="Light"/>
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="FontStyle" Value="Italic"/>
+        <Setter Property="TextOptions.TextFormattingMode" Value="Ideal" />
+        <Setter Property="Foreground" Value="Gray"/>
+    </Style>
+
+    <Style x:Key="LargeHintStyle" TargetType="TextBlock">
+        <Setter Property="Margin" Value="4, -12, 4, 8"/>
+        <Setter Property="FontWeight" Value="Light"/>
+        <Setter Property="FontSize" Value="16"/>
+        <Setter Property="FontStyle" Value="Italic"/>
+        <Setter Property="TextOptions.TextFormattingMode" Value="Ideal" />
+        <Setter Property="Foreground" Value="Gray"/>
     </Style>
 
     <Style x:Key="LocationInfoStyle" TargetType="TextBlock">
         <Setter Property="FontSize" Value="12"/>
-        <Setter Property="Foreground" Value="DimGray"/>
+        <Setter Property="Foreground" Value="Gray"/>
+        <Setter Property="TextOptions.TextFormattingMode" Value="Ideal" />
+    </Style>
+
+    <Style x:Key="CommandStackPanel" TargetType="StackPanel">
+        <Setter Property="Orientation" Value="Horizontal"/>
+        <Setter Property="HorizontalAlignment" Value="Right"/>
     </Style>
     
     <DataTemplate x:Key="LocationTemplate" DataType="{x:Type model:Location}">
-        <StackPanel>
+        <StackPanel Margin="8, 4">
             <TextBlock Text="{Binding Name}" Style="{StaticResource LocationHeaderStyle}"/>
             <TextBlock Style="{StaticResource LocationInfoStyle}">
-                Системное имя: <TextBlock Text="{Binding SystemName}"/>;
-                Записей о погоде: <TextBlock Text="{Binding WeatherRecordsCount}"/>;
+                Системное имя: <TextBlock Text="{Binding SystemName}"/><LineBreak/>
+                Записей о погоде: <TextBlock Text="{Binding WeatherRecordsCount}"/><LineBreak/>
                 Отчетов создано: <TextBlock Text="{Binding FireHazardReportsCount}"/>
             </TextBlock>
         </StackPanel>

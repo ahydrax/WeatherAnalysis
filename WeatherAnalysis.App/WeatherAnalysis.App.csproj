@@ -88,15 +88,30 @@
     </Compile>
     <Compile Include="Configuration\AppModule.cs" />
     <Compile Include="Converters\CurrentTimeZoneDateTimeConverter.cs" />
+    <Compile Include="Model\CreateWeatherRecordsParameter.cs" />
     <Compile Include="Navigation\DialogNavigationService.cs" />
     <Compile Include="Navigation\Dialogs.cs" />
+    <Compile Include="Navigation\IParameterReceiver.cs" />
+    <Compile Include="ViewModel\BaseViewModel.cs" />
+    <Compile Include="ViewModel\CreateLocationViewModel.cs" />
+    <Compile Include="ViewModel\CreateWeatherRecordsViewModel.cs" />
     <Compile Include="ViewModel\LocationSelectViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
+    <Compile Include="ViewModel\ReportBuilderViewModel.cs" />
+    <Compile Include="View\CreateLocationView.xaml.cs">
+      <DependentUpon>CreateLocationView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\CreateWeatherRecordsView.xaml.cs">
+      <DependentUpon>CreateWeatherRecordsView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\LocationSelectView.xaml.cs">
       <DependentUpon>LocationSelectView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\MainView.xaml.cs">
       <DependentUpon>MainView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\ReportBuilderView.xaml.cs">
+      <DependentUpon>ReportBuilderView.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -133,7 +148,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="DataTemplates.xaml">
+    <Page Include="Templates\DataTemplates.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -141,11 +156,27 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Templates\WeatherRecordGridColumns.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\CreateLocationView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\CreateWeatherRecordsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\LocationSelectView.xaml">
       <SubType>Form</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\MainView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\ReportBuilderView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
