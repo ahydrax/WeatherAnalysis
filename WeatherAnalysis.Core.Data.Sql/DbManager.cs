@@ -21,9 +21,9 @@ namespace WeatherAnalysis.Core.Data.Sql
             {
                 try
                 {
-                    db.GetTable<Location>().Any();
-                    db.GetTable<WeatherRecord>().Any();
-                    db.GetTable<FireHazardReport>().Any();
+                    db.GetTable<Location>().FirstOrDefault();
+                    db.GetTable<WeatherRecord>().FirstOrDefault();
+                    db.GetTable<FireHazardReport>().FirstOrDefault();
 
                     return true;
                 }
