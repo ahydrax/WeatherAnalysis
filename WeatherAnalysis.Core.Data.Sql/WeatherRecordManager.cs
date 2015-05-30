@@ -32,19 +32,21 @@ namespace WeatherAnalysis.Core.Data.Sql
             }
         }
 
-        public WeatherRecord GetLastRainyWeatherRecord(WeatherRecord current)
+        public DateTime GetLastRainyDay(int locationId, DateTime from, DateTime to)
         {
-            using (var db = new DataConnection(_configurationString))
+            var lastRainyDay = to.Date;
+
+            while (lastRainyDay > from)
             {
-                var rainyWeatherRecord = db.GetTable<WeatherRecord>()
-                    .Where(r => r.LocationId == current.LocationId)
-                    .Where(r => r.Created <= current.Created)
-                    .LastOrDefault(r => r.Precipitation > 0);
+                var records = Get(locationId, lastRainyDay, lastRainyDay.AddHours(24));
 
-                if (rainyWeatherRecord == null) throw new WeatherRecordNotFoundException("No info found about last rainy day.");
+                if (records.Sum(r => r.Precipitation) >= 3)
+                    return lastRainyDay;
 
-                return rainyWeatherRecord;
+                lastRainyDay = lastRainyDay.AddDays(-1);
             }
+
+            throw new WeatherRecordNotFoundException("No info found about last rainy day.");
         }
 
         public void Save(WeatherRecord weatherRecord)

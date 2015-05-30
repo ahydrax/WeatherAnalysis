@@ -7,7 +7,7 @@ namespace WeatherAnalysis.Core.Data
     public interface IWeatherRecordManager
     {
         IReadOnlyCollection<WeatherRecord> Get(int locationId, DateTime from, DateTime to);
-        WeatherRecord GetLastRainyWeatherRecord(WeatherRecord current);
+        DateTime GetLastRainyDay(int locationId, DateTime from, DateTime to);
         void Save(WeatherRecord weatherRecord);
         void Delete(WeatherRecord weatherRecord);
     }
