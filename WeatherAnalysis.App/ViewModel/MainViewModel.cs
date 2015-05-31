@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Data;
 using GalaSoft.MvvmLight.CommandWpf;
 using GalaSoft.MvvmLight.Messaging;
+using GalaSoft.MvvmLight.Threading;
 using GalaSoft.MvvmLight.Views;
 using WeatherAnalysis.App.Model;
 using WeatherAnalysis.App.Navigation;
@@ -181,9 +182,20 @@ namespace WeatherAnalysis.App.ViewModel
 
         private void ExecuteBuildReport(WeatherRecord record)
         {
-            var b = new FireHazardReportBuilder(_weatherRecordManager);
-            var report = b.BuildReport(record);
-            NavigationService.NavigateTo(Dialogs.ReportBuilder, report);
+            var buildTask = Task.Run(() =>
+            {
+                var b = new FireHazardReportBuilder(_weatherRecordManager);
+                var report = b.BuildReport(record);
+                return report;
+            });
+            buildTask.ContinueWith(DispatchError);
+            buildTask.ContinueWith(task =>
+            {
+                if (task.IsFaulted || task.IsCanceled) return;
+
+                DispatcherHelper.CheckBeginInvokeOnUI(() => NavigationService.NavigateTo(Dialogs.ReportBuilder, task.Result));
+            });
+
         }
 
         public RelayCommand<WeatherRecord> RemoveWeatherRecord
