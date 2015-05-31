@@ -17,15 +17,6 @@
     <ma:MetroWindow.RightWindowCommands>
         <ma:WindowCommands>
             <Button Content="{Binding SelectedLocation.Name, FallbackValue='Выбрать город'}" Command="{Binding SelectLocation}"/>
-            <Button>
-                <Button.Content>
-                    <Rectangle Height="20" Width="20" Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
-                        <Rectangle.OpacityMask>
-                            <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_cog}" />
-                        </Rectangle.OpacityMask>
-                    </Rectangle>
-                </Button.Content>
-            </Button>
         </ma:WindowCommands>
     </ma:MetroWindow.RightWindowCommands>
     <Grid Style="{StaticResource BaseGridStyle}">
