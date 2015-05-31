@@ -27,7 +27,8 @@
             <TextBox Text="{Binding Error.StackTrace, Mode=OneWay}"
                      TextWrapping="Wrap"
                      AcceptsReturn="True"
-                     VerticalScrollBarVisibility="Visible"/>
+                     VerticalScrollBarVisibility="Visible"
+                     Style="{StaticResource BorderlessTextBoxStyle}"/>
         </Expander>
 
         <StackPanel Grid.Row="3" Style="{StaticResource CommandStackPanel}">
