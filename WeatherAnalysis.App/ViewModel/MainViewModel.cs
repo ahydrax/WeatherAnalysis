@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Data;
 using GalaSoft.MvvmLight.CommandWpf;
 using GalaSoft.MvvmLight.Messaging;
@@ -105,13 +104,7 @@ namespace WeatherAnalysis.App.ViewModel
                     WeatherRecords.Add(weatherRecord);
                 }
             });
-            refreshTask.ContinueWith(task =>
-            {
-                if (task.IsFaulted)
-                {
-                    MessageBox.Show("Ошибка при загрузке данных");
-                }
-            });
+            refreshTask.ContinueWith(DispatchError);
         }
 
         #region Properties

@@ -16,7 +16,6 @@ namespace WeatherAnalysis.App.ViewModel
 
         #region Properties
 
-        // Name
         public const string NamePropertyName = "Name";
         public string Name
         {
@@ -24,7 +23,6 @@ namespace WeatherAnalysis.App.ViewModel
             set { Set(NamePropertyName, ref _name, value); }
         }
 
-        // SystemName
         public const string SystemNamePropertyName = "SystemName";
         public string SystemName
         {
@@ -36,7 +34,6 @@ namespace WeatherAnalysis.App.ViewModel
 
         #region Commands
 
-        // Save Location Command
         public RelayCommand SaveLocation
         {
             get

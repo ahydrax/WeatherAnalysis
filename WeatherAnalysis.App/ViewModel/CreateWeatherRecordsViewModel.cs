@@ -78,7 +78,6 @@ namespace WeatherAnalysis.App.ViewModel
 
         #region Commands
 
-        // Save Records Command
         public RelayCommand SaveRecords
         {
             get
@@ -107,7 +106,6 @@ namespace WeatherAnalysis.App.ViewModel
             return _weatherRecords.Count > 0;
         }
 
-        // Download Records Command
         public RelayCommand DownloadRecords
         {
             get
@@ -134,6 +132,7 @@ namespace WeatherAnalysis.App.ViewModel
                     _weatherRecords.Add(weatherRecord);
                 }
             });
+            downloadTask.ContinueWith(DispatchError);
         }
 
         #endregion

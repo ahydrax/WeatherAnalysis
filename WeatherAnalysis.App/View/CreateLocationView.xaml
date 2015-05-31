@@ -6,7 +6,7 @@
                 xmlns:ma="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
                 xmlns:vm="clr-namespace:WeatherAnalysis.App.ViewModel"
                 mc:Ignorable="d" d:DataContext="{d:DesignInstance Type=vm:CreateLocationViewModel, IsDesignTimeCreatable=False}"
-                Title="Рассчет коэффициента пожароопаности"
+                Title="Добавление нового города"
                 WindowStartupLocation="CenterScreen"
                 Width="600" Height="320"
                 ResizeMode="NoResize">

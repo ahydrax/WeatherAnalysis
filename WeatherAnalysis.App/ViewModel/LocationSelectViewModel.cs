@@ -91,7 +91,7 @@ namespace WeatherAnalysis.App.ViewModel
         #endregion
 
         #region Commands
-        // Get Locations Command
+
         public RelayCommand GetLocations
         {
             get
@@ -121,16 +121,9 @@ namespace WeatherAnalysis.App.ViewModel
                 }
             });
 
-            locationGetTask.ContinueWith(task =>
-            {
-                if (task.IsFaulted)
-                {
-
-                }
-            });
+            locationGetTask.ContinueWith(DispatchError);
         }
 
-        // Create Location Command
         public RelayCommand CreateLocation
         {
             get
@@ -140,7 +133,6 @@ namespace WeatherAnalysis.App.ViewModel
             }
         }
 
-        // Select Location Command
         public RelayCommand SelectLocation
         {
             get
@@ -157,7 +149,6 @@ namespace WeatherAnalysis.App.ViewModel
             NavigationService.GoBack();
         }
 
-        // Remove Location Command
         public RelayCommand RemoveLocation
         {
             get
@@ -178,6 +169,7 @@ namespace WeatherAnalysis.App.ViewModel
             var removeTask = Task.Run(() => _locationManager.Delete(selectedLocation));
             removeTask.ContinueWith(task => ExecuteGetLocations());
         }
+
         #endregion
     }
 }
