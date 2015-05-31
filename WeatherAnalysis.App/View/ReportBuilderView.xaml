@@ -67,7 +67,7 @@
                     <ListItem>
                         <Paragraph>
                             Влажность
-                            <Run Text="{Binding SelectedWeatherRecord.Temperature, StringFormat={}{0:0.0}}"/> %
+                            <Run Text="{Binding SelectedWeatherRecord.Humidity, StringFormat={}{0:0.0}}"/> %
                         </Paragraph>
                     </ListItem>
                     <ListItem>
