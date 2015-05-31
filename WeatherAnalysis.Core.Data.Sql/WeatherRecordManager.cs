@@ -46,7 +46,7 @@ namespace WeatherAnalysis.Core.Data.Sql
                 lastRainyDay = lastRainyDay.AddDays(-1);
             }
 
-            throw new WeatherRecordNotFoundException("No info found about last rainy day.");
+            throw new WeatherRecordNotFoundException("Не найдена информация об осадках за последнее время.");
         }
 
         public void Save(WeatherRecord weatherRecord)
