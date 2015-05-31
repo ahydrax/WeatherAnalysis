@@ -8,9 +8,10 @@
                 mc:Ignorable="d" d:DataContext="{d:DesignInstance Type=vm:LocationSelectViewModel, IsDesignTimeCreatable=False}"
                 Title="Выбор города"
                 WindowStartupLocation="CenterScreen"
-                Width="720" Height="500"
+                Width="720" Height="600"
                 MinWidth="640" MinHeight="480">
     <Grid Style="{StaticResource BaseGridStyle}">
+        
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
