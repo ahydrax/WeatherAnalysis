@@ -2,6 +2,7 @@
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.CommandWpf;
 using GalaSoft.MvvmLight.Messaging;
+using GalaSoft.MvvmLight.Threading;
 using GalaSoft.MvvmLight.Views;
 using WeatherAnalysis.App.Navigation;
 
@@ -39,9 +40,8 @@ namespace WeatherAnalysis.App.ViewModel
                 if (!t.IsFaulted) return;
                 if (t.Exception == null) return;
 
-                GalaSoft.MvvmLight.Threading.DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                DispatcherHelper.CheckBeginInvokeOnUI(() =>
                 {
-
                     var exception = (t.Exception.InnerException ?? t.Exception);
                     NavigationService.NavigateTo(Dialogs.Error, exception);
                 });
