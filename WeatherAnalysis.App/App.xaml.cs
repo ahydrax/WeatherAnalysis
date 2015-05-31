@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using GalaSoft.MvvmLight.Threading;
 using Ninject;
 using WeatherAnalysis.App.Configuration;
 using WeatherAnalysis.App.View;
@@ -9,6 +10,11 @@ namespace WeatherAnalysis.App
     public partial class App
     {
         public IKernel Container { get { return _container; } }
+
+        public App()
+        {
+            DispatcherHelper.Initialize();
+        }
 
         protected override void OnStartup(StartupEventArgs e)
         {

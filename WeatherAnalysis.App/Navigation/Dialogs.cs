@@ -7,5 +7,6 @@
         public static readonly string CreateLocation = "CreateLocation";
         public static readonly string CreateWeatherRecords = "CreateWeatherRecords";
         public static readonly string ReportBuilder = "ReportBuilder";
+        public static readonly string Error = "Error";
     }
 }

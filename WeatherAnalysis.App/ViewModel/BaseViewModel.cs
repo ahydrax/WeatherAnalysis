@@ -1,7 +1,9 @@
-﻿using GalaSoft.MvvmLight;
+﻿using System.Threading.Tasks;
+using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.CommandWpf;
 using GalaSoft.MvvmLight.Messaging;
 using GalaSoft.MvvmLight.Views;
+using WeatherAnalysis.App.Navigation;
 
 namespace WeatherAnalysis.App.ViewModel
 {
@@ -13,7 +15,7 @@ namespace WeatherAnalysis.App.ViewModel
         protected readonly IMessenger Messenger;
 
         private RelayCommand _cancelCommand;
-        
+
         protected BaseViewModel(INavigationService navigationService, IMessenger messenger)
         {
             NavigationService = navigationService;
@@ -24,10 +26,26 @@ namespace WeatherAnalysis.App.ViewModel
         {
             InProgress = true;
         }
-        
+
         protected virtual void FinishProgress()
         {
             InProgress = false;
+        }
+
+        protected void DispatchError(Task task)
+        {
+            task.ContinueWith(t =>
+            {
+                if (!t.IsFaulted) return;
+                if (t.Exception == null) return;
+
+                GalaSoft.MvvmLight.Threading.DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                {
+
+                    var exception = (t.Exception.InnerException ?? t.Exception);
+                    NavigationService.NavigateTo(Dialogs.Error, exception);
+                });
+            });
         }
 
         #region Common properties

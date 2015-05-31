@@ -60,6 +60,7 @@ namespace WeatherAnalysis.App.Configuration
             navigationService.Register(Dialogs.CreateLocation, typeof (CreateLocationView));
             navigationService.Register(Dialogs.CreateWeatherRecords, typeof (CreateWeatherRecordsView));
             navigationService.Register(Dialogs.ReportBuilder, typeof(ReportBuilderView));
+            navigationService.Register(Dialogs.Error, typeof(ErrorView));
             Kernel.Bind<INavigationService>().ToConstant(navigationService);
         }
     }
