@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Data;
 using GalaSoft.MvvmLight.CommandWpf;
 using GalaSoft.MvvmLight.Messaging;
 using GalaSoft.MvvmLight.Threading;
 using GalaSoft.MvvmLight.Views;
+using WeatherAnalysis.App.Communication;
 using WeatherAnalysis.App.Model;
 using WeatherAnalysis.App.Navigation;
 using WeatherAnalysis.Core.Data;
@@ -63,7 +65,7 @@ namespace WeatherAnalysis.App.ViewModel
 
         private void Subscribe()
         {
-            Messenger.Register<Location>(this, NewLocationSelected);
+            Messenger.Register<Location>(this, Channels.LocationSelect, NewLocationSelected);
             Messenger.Register<IReadOnlyCollection<WeatherRecord>>(this, WeatherRecordsCreated);
         }
 
@@ -93,14 +95,18 @@ namespace WeatherAnalysis.App.ViewModel
             if (SelectedLocation == null || !SelectedLocation.Id.HasValue) return;
 
             StartProgress();
-            WeatherRecords.Clear();
+            
+            var from = SelectedDate.Date.ToUniversalTime();
+            var to = from.AddHours(24);
 
-            var refreshTask = Task.Run(() => _weatherRecordManager.Get(SelectedLocation.Id.Value, SelectedDate.Date, SelectedDate.Date.AddHours(24)));
+            var refreshTask = Task.Run(() => _weatherRecordManager.Get(SelectedLocation.Id.Value, from, to));
             refreshTask.ContinueWith(task => FinishProgress());
             refreshTask.ContinueWith(task =>
             {
                 if (task.IsFaulted || task.IsCanceled) return;
-                foreach (var weatherRecord in task.Result)
+
+                WeatherRecords.Clear();
+                foreach (var weatherRecord in task.Result.OrderBy(record => record.Created))
                 {
                     WeatherRecords.Add(weatherRecord);
                 }

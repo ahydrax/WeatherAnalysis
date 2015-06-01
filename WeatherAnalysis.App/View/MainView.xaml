@@ -16,7 +16,9 @@
     </Window.Resources>
     <ma:MetroWindow.RightWindowCommands>
         <ma:WindowCommands>
-            <Button Content="{Binding SelectedLocation.Name, FallbackValue='Выбрать город'}" Command="{Binding SelectLocation}"/>
+            <Button Content="{Binding SelectedLocation.Name, FallbackValue='Выбрать город'}"
+                    Command="{Binding SelectLocation}"
+                    IsEnabled="{Binding InProgress, Converter={StaticResource InverseBooleanConverter}}"/>
         </ma:WindowCommands>
     </ma:MetroWindow.RightWindowCommands>
     <Grid Style="{StaticResource BaseGridStyle}">
@@ -33,16 +35,18 @@
         <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
                    Text="{Binding SelectedLocation.Name, FallbackValue='Не выбран город'}"
                    Style="{StaticResource LargeHeaderStyle}"/>
-        
+
         <DatePicker Grid.Column="1" Grid.Row="0"
                     SelectedDate="{Binding SelectedDate}"
-                    Style="{StaticResource BorderlessDatepickerStyle}"/>
+                    Style="{StaticResource BorderlessDatepickerStyle}"
+                    IsEnabled="{Binding InProgress, Converter={StaticResource InverseBooleanConverter}}"/>
 
         <DataGrid Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2"
                   Name="WeatherRecordsDataGrid"
                   ItemsSource="{Binding WeatherRecords}"
                   SelectedItem="{Binding SelectedWeatherRecord}"
                   IsSynchronizedWithCurrentItem="True"
+                  IsEnabled="{Binding InProgress, Converter={StaticResource InverseBooleanConverter}}"
                   ColumnWidth="*"
                   CanUserResizeColumns="True" AutoGenerateColumns="False" IsReadOnly="True">
             <DataGrid.Columns>
@@ -67,7 +71,8 @@
         <StackPanel Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2" Style="{StaticResource CommandStackPanel}">
             <Button Content="Сформировать отчет"
                     Command="{Binding BuildReport}"
-                    CommandParameter="{Binding SelectedWeatherRecord}"/>
+                    CommandParameter="{Binding SelectedWeatherRecord}"
+                    IsEnabled="{Binding InProgress, Converter={StaticResource InverseBooleanConverter}}"/>
         </StackPanel>
     </Grid>
 </ma:MetroWindow>

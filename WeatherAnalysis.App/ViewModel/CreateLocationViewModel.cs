@@ -1,6 +1,7 @@
 ﻿using GalaSoft.MvvmLight.CommandWpf;
 using GalaSoft.MvvmLight.Messaging;
 using GalaSoft.MvvmLight.Views;
+using WeatherAnalysis.App.Communication;
 using WeatherAnalysis.Core.Model;
 
 namespace WeatherAnalysis.App.ViewModel
@@ -52,7 +53,7 @@ namespace WeatherAnalysis.App.ViewModel
                 SystemName = SystemName
             };
 
-            Messenger.Send(location);
+            Messenger.Send(location, Channels.LocationSave);
             NavigationService.GoBack();
         }
 

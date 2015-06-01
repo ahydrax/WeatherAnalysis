@@ -5,6 +5,7 @@ using System.Windows.Data;
 using GalaSoft.MvvmLight.CommandWpf;
 using GalaSoft.MvvmLight.Messaging;
 using GalaSoft.MvvmLight.Views;
+using WeatherAnalysis.App.Communication;
 using WeatherAnalysis.App.Navigation;
 using WeatherAnalysis.Core.Data;
 using WeatherAnalysis.Core.Model;
@@ -31,7 +32,7 @@ namespace WeatherAnalysis.App.ViewModel
         {
             _locationManager = locationManager;
             
-            Messenger.Register<Location>(this, SaveLocation);
+            Messenger.Register<Location>(this, Channels.LocationSave, SaveLocation);
 
             InitializeLocationsViewSource();
             ExecuteGetLocations();
@@ -61,6 +62,7 @@ namespace WeatherAnalysis.App.ViewModel
         {
             var saveTask = Task.Run(() => _locationManager.Save(location));
             saveTask.ContinueWith(task => ExecuteGetLocations());
+            saveTask.ContinueWith(DispatchError);
         }
 
         #region Properties
@@ -113,7 +115,7 @@ namespace WeatherAnalysis.App.ViewModel
 
             locationGetTask.ContinueWith(task =>
             {
-                if (task.IsFaulted) return;
+                if (task.IsFaulted || task.IsCanceled) return;
 
                 foreach (var location in task.Result)
                 {
@@ -145,7 +147,7 @@ namespace WeatherAnalysis.App.ViewModel
 
         private void ExecuteSelectLocation()
         {
-            Messenger.Send(SelectedLocation);
+            Messenger.Send(SelectedLocation, Channels.LocationSelect);
             NavigationService.GoBack();
         }
 

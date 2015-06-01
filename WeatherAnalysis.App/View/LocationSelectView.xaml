@@ -21,13 +21,18 @@
 
         <TextBlock Grid.Row="0" Text="Выбор города" Style="{StaticResource LargeHeaderStyle}"/>
 
-        <TextBox Grid.Row="1" Text="{Binding LocationsFilter, Delay=300, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource BorderlessTextBoxStyle}" ma:TextBoxHelper.Watermark="Фильтр"/>
+        <TextBox Grid.Row="1"
+                 Text="{Binding LocationsFilter, Delay=300, UpdateSourceTrigger=PropertyChanged}"
+                 Style="{StaticResource BorderlessTextBoxStyle}"
+                 ma:TextBoxHelper.Watermark="Фильтр"
+                 IsEnabled="{Binding InProgress, Converter={StaticResource InverseBooleanConverter}}"/>
 
         <ListView Grid.Row="2"
                   ItemTemplate="{StaticResource LocationTemplate}"
                   ItemsSource="{Binding LocationsView}"
                   SelectedItem="{Binding SelectedLocation}"
-                  IsSynchronizedWithCurrentItem="True">
+                  IsSynchronizedWithCurrentItem="True"
+                  IsEnabled="{Binding InProgress, Converter={StaticResource InverseBooleanConverter}}">
             <ListView.ContextMenu>
                 <ContextMenu Margin="8">
                     <MenuItem Header="Создать" Command="{Binding CreateLocation}"/>
@@ -41,8 +46,12 @@
         <ma:ProgressRing Grid.Row="2" IsActive="{Binding InProgress}"/>
         
         <StackPanel Grid.Row="3" Grid.Column="0" Style="{StaticResource CommandStackPanel}">
-            <Button Content="Выбрать" Command="{Binding SelectLocation}"/>
-            <Button Content="Отменить" Command="{Binding Cancel}"/>
+            <Button Content="Выбрать"
+                    Command="{Binding SelectLocation}"
+                    IsEnabled="{Binding InProgress, Converter={StaticResource InverseBooleanConverter}}"/>
+            
+            <Button Content="Отменить"
+                    Command="{Binding Cancel}"/>
         </StackPanel>
     </Grid>
 </ma:MetroWindow>

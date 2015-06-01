@@ -70,6 +70,12 @@ namespace WeatherAnalysis.App.ViewModel
             }
         }
 
+        public override void Cleanup()
+        {
+            base.Cleanup();
+            Messenger.Unregister(this);
+        }
+
         #endregion
     }
 }

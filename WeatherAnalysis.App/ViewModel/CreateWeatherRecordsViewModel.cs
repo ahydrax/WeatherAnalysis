@@ -90,11 +90,14 @@ namespace WeatherAnalysis.App.ViewModel
 
         private void ExecuteSaveRecords()
         {
+            var currentTimeZone = TimeZone.CurrentTimeZone;
+            var date = currentTimeZone.ToUniversalTime(SelectedDate.Date);
+
             foreach (var weatherRecord in _weatherRecords)
             {
                 weatherRecord.LocationId = SelectedLocation.Id;
                 weatherRecord.Location = SelectedLocation;
-                weatherRecord.Created = SelectedDate.Add(weatherRecord.Created.TimeOfDay);
+                weatherRecord.Created = date.Add(weatherRecord.Created.TimeOfDay);
             }
 
             Messenger.Send<IReadOnlyCollection<WeatherRecord>>(_weatherRecords);
@@ -118,8 +121,11 @@ namespace WeatherAnalysis.App.ViewModel
         private void ExecuteDownloadRecords()
         {
             StartProgress();
-            
-            var downloadTask = Task.Run(() => _weatherService.GetWeatherData(SelectedLocation, SelectedDate, SelectedDate.AddHours(24)));
+
+            var from = SelectedDate.Date.ToUniversalTime();
+            var to = from.AddHours(24);
+
+            var downloadTask = Task.Run(() => _weatherService.GetWeatherData(SelectedLocation, from, to));
             downloadTask.ContinueWith(task => FinishProgress());
             downloadTask.ContinueWith(task =>
             {

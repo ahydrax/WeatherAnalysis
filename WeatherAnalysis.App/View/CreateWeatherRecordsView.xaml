@@ -1,7 +1,6 @@
 ﻿<ma:MetroWindow x:Class="WeatherAnalysis.App.View.CreateWeatherRecordsView"
                 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                xmlns:c="clr-namespace:WeatherAnalysis.App.Converters"
                 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                 xmlns:ma="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
@@ -32,11 +31,12 @@
         </TextBlock>
         
         <DataGrid Grid.Row="2"
-                  ItemsSource="{Binding WeatherRecordsView}"
+                  ItemsSource="{Binding WeatherRecordsView, ValidatesOnExceptions=True}"
                   SelectionMode="Single"
                   CanUserResizeColumns="True" AutoGenerateColumns="False"
                   ColumnWidth="*"
-                  CanUserAddRows="True" CanUserDeleteRows="True">
+                  CanUserAddRows="True" CanUserDeleteRows="True"
+                  IsEnabled="{Binding InProgress, Converter={StaticResource InverseBooleanConverter}}">
             <DataGrid.Columns>
                 <StaticResource ResourceKey="TimeColumn"/>
                 <StaticResource ResourceKey="TemperatureColumn"/>
@@ -47,8 +47,12 @@
         <ma:ProgressRing Grid.Row="2" IsActive="{Binding InProgress}"/>
 
         <StackPanel Grid.Row="3" Style="{StaticResource CommandStackPanel}">
-            <Button Content="Загрузить данные" Command="{Binding DownloadRecords}"/>
-            <Button Content="Сохранить данные" Command="{Binding SaveRecords}"/>
+            <Button Content="Загрузить данные" Command="{Binding DownloadRecords}"
+                    IsEnabled="{Binding InProgress, Converter={StaticResource InverseBooleanConverter}}"/>
+            
+            <Button Content="Сохранить данные" Command="{Binding SaveRecords}"
+                    IsEnabled="{Binding InProgress, Converter={StaticResource InverseBooleanConverter}}"/>
+            
             <Button Content="Отменить" Command="{Binding Cancel}"/>
         </StackPanel>
     </Grid>

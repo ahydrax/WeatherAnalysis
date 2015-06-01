@@ -70,8 +70,10 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Communication\Channels.cs" />
     <Compile Include="Configuration\AppModule.cs" />
     <Compile Include="Converters\CurrentTimeZoneDateTimeConverter.cs" />
+    <Compile Include="Converters\InverseBooleanConverter.cs" />
     <Compile Include="Model\CreateWeatherRecordsParameter.cs" />
     <Compile Include="Navigation\DialogNavigationService.cs" />
     <Compile Include="Navigation\Dialogs.cs" />

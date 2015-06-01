@@ -6,6 +6,8 @@
     <DataGridTextColumn x:Key="TimeColumn"
                         Header="Время"
                         MaxWidth="80"
+                        SortMemberPath="{Binding Created}"
+                        SortDirection="Ascending"
                         Binding="{Binding Created, StringFormat=\{0:HH:mm\}, Converter={StaticResource TimeZoneDateTimeConverter}}"/>
 
     <DataGridTextColumn x:Key="TemperatureColumn"

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using LinqToDB;
 using LinqToDB.Data;
+using WeatherAnalysis.Core.Exceptions;
 using WeatherAnalysis.Core.Model;
 
 namespace WeatherAnalysis.Core.Data.Sql
@@ -55,6 +56,9 @@ namespace WeatherAnalysis.Core.Data.Sql
 
         public void Save(Location location)
         {
+            var exist = Get(location.Name).FirstOrDefault();
+            if (exist != null) throw new WeatherAnalysisException("Населенный пункт с таким именем уже существует.");
+
             using (var db = new DataConnection(_configurationString))
             {
                 if (location.Id.HasValue)

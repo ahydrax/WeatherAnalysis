@@ -5,13 +5,15 @@
     xmlns:model="clr-namespace:WeatherAnalysis.Core.Model;assembly=WeatherAnalysis.Core">
     
     <c:CurrentTimeZoneDateTimeConverter x:Key="CurrentTimeZoneDateTimeConverter"/>
-    
+
+    <c:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
+
     <Style x:Key="BaseGridStyle" TargetType="Grid">
         <Setter Property="Margin" Value="16"/>
     </Style>
     
     <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
-        <Setter Property="Margin" Value="2, 2, 1, 2"/>
+        <Setter Property="Margin" Value="3, 2, 1, 2"/>
         <Setter Property="Padding" Value="8"/>
     </Style>
     

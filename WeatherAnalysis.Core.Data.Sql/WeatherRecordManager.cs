@@ -25,7 +25,7 @@ namespace WeatherAnalysis.Core.Data.Sql
                     .LoadWith(record => record.Location)
                     .Where(r => r.LocationId == locationId)
                     .Where(r => r.Created >= from)
-                    .Where(r => r.Created <= to)
+                    .Where(r => r.Created < to)
                     .ToArray();
 
                 return weatherRecords;
@@ -51,6 +51,10 @@ namespace WeatherAnalysis.Core.Data.Sql
 
         public void Save(WeatherRecord weatherRecord)
         {
+            var existRecord = Get(weatherRecord.LocationId.Value, weatherRecord.Created, weatherRecord.Created)
+                .FirstOrDefault();
+            if (existRecord != null) throw new WeatherAnalysisException("Запись на данное время уже добавлена");
+            
             using (var db = new DataConnection(_configurationString))
             {
                 if (weatherRecord.Id.HasValue)

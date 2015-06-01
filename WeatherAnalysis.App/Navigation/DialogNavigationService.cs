@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows;
 using GalaSoft.MvvmLight.Views;
 using Ninject;
+using WeatherAnalysis.App.ViewModel;
 
 namespace WeatherAnalysis.App.Navigation
 {
@@ -53,6 +54,13 @@ namespace WeatherAnalysis.App.Navigation
                 {
                     nextDialogParameterReceiver.ReceiveParameter(parameter);
                 }
+
+                nextDialog.Closed += (sender, args) =>
+                {
+                    var cleanableContext = nextDialog.DataContext as BaseViewModel;
+                    if (cleanableContext == null) return;
+                    cleanableContext.Cleanup();
+                };
 
                 nextDialog.ShowDialog();
             }
