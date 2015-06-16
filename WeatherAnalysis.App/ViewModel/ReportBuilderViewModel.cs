@@ -29,7 +29,7 @@ namespace WeatherAnalysis.App.ViewModel
         private readonly object _recentReportsSyncReport = new object();
         private WeatherRecord _weatherRecord;
         private FireHazardReport _selectedReport;
-        private bool _isSaved = false;
+        private bool _isSaved;
         private string _conclusion = string.Empty;
         private string _signedBy = string.Empty;
 
@@ -49,7 +49,6 @@ namespace WeatherAnalysis.App.ViewModel
             if (e.PropertyName == SignedByPropertyName)
             {
                 SelectedReport.SignedBy = SignedBy;
-
             }
         }
 
@@ -146,8 +145,7 @@ namespace WeatherAnalysis.App.ViewModel
         {
             SaveReportToDbIfNotExists(SelectedReport);
 
-            var saveDialog = new SaveFileDialog();
-            saveDialog.Filter = "RTF документ (*.rtf)|*.rtf|Все файлы (*.*)|*.*";
+            var saveDialog = new SaveFileDialog {Filter = "RTF документ (*.rtf)|*.rtf|Все файлы (*.*)|*.*"};
 
             if (saveDialog.ShowDialog() == true)
             {
@@ -222,5 +220,4 @@ namespace WeatherAnalysis.App.ViewModel
 
         #endregion
     }
-
 }
