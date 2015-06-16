@@ -59,7 +59,7 @@ namespace WeatherAnalysis.Core.Service.OpenWeather
             var todayForecast = new List<dynamic>();
             foreach (var weatherData in data.list)
             {
-                var date = DateTimeHelper.CreateFromTimestamp(Convert.ToInt32(weatherData.dt)).ToLocalTime();
+                var date = DateTimeHelper.CreateFromTimestamp(Convert.ToInt32(weatherData.dt));
                 if (IsBetween(from, date, to))
                 {
                     todayForecast.Add(weatherData);

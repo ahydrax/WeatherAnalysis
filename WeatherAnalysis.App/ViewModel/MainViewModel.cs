@@ -95,8 +95,9 @@ namespace WeatherAnalysis.App.ViewModel
             if (SelectedLocation == null || !SelectedLocation.Id.HasValue) return;
 
             StartProgress();
-            
-            var from = SelectedDate.Date.ToUniversalTime();
+
+            var currentTimeZone = TimeZone.CurrentTimeZone;
+            var from = currentTimeZone.ToUniversalTime(SelectedDate.Date);
             var to = from.AddHours(24);
 
             var refreshTask = Task.Run(() => _weatherRecordManager.Get(SelectedLocation.Id.Value, from, to));

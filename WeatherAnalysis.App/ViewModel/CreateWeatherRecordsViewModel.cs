@@ -90,14 +90,10 @@ namespace WeatherAnalysis.App.ViewModel
 
         private void ExecuteSaveRecords()
         {
-            var currentTimeZone = TimeZone.CurrentTimeZone;
-            var date = currentTimeZone.ToUniversalTime(SelectedDate.Date);
-
             foreach (var weatherRecord in _weatherRecords)
             {
                 weatherRecord.LocationId = SelectedLocation.Id;
                 weatherRecord.Location = SelectedLocation;
-                weatherRecord.Created = date.Add(weatherRecord.Created.TimeOfDay);
             }
 
             Messenger.Send<IReadOnlyCollection<WeatherRecord>>(_weatherRecords);
